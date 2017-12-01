@@ -3,9 +3,9 @@ import 'p2'
 import * as Phaser from 'phaser-ce'
 
 declare global {
-  interface Window { game: any; }
+  interface Window { main: any; }
 }
-window.game = window.game || {};
+window.main = window.main || {};
 
 import BootState from './states/Boot'
 import SplashState from './states/Splash'
@@ -29,4 +29,4 @@ class Game extends Phaser.Game {
   }
 }
 
-window.game = new Game()
+window.main = new Game()
