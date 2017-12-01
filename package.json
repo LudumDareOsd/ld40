@@ -1,8 +1,8 @@
 {
-  "name": "PhaserES6Webpack",
+  "name": "LD40LDOSD",
   "version": "1.0.0",
   "description": "",
-  "author": "leandro cabrera <leandcabrera@gmail.com>",
+  "author": "Ludum Dare Östersund",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
