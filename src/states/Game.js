@@ -85,8 +85,12 @@ export default class extends Phaser.State {
   }
 
   createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
-    let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup)
+    let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
     this.powerUps.push(pu);
+  }
+
+  removePowerup(powType) {
+    this.powerUps.splice(this.powerUps.indexOf(powType), 1);
   }
 
   createHud(carplayer) {
