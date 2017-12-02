@@ -10,7 +10,7 @@ export default class extends Phaser.State {
     this.splash.y = 0;
     this.splash.width = this.game.width;
     this.splash.height = this.game.height;
-    
+    this.splash.smoothed = false;
 
     this.load.setPreloadSprite(this.splash)
     //

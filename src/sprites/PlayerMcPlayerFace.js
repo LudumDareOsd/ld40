@@ -16,22 +16,22 @@ export default class extends Phaser.Sprite {
         this.body.damping = 0.94;
         this.body.setZeroRotation();
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
 
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
                 this.body.rotateLeft(50);
             }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                 this.body.rotateRight(50);
             }
             this.body.thrust(this.maxThrust + this.addedThrust);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
-                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
                     this.body.rotateLeft(10);
                 }
-                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                     this.body.rotateRight(10);
                 }
             }

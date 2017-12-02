@@ -2,18 +2,22 @@ import Phaser from 'phaser'
 import Path from '../map/Path';
 
 export default class {
-    constructor(game) {
+    constructor(game, state) {
         this.game = game;
+        this.state = state;
         this.lastpos = {
             x: 0, y: 0
         }
         this.path = new Path(game);
         this.levelNumber = 1; // currently loaded level #
         this.levelScale = 2; // scale of maptexture
-        this.startPosition = {
-            x: 0,
-            y: 0
-        }
+        this.startPositions = [
+            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0)
+        ];
+        this.startRects = [ // just for debugging
+            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20)
+        ];
+        this.selectedPosition = 0;
         this.POLYTYPE = {
             road: 0,
             boost: 1,
@@ -23,7 +27,7 @@ export default class {
         this.selectedLayer = this.POLYTYPE.road;
 
         this.polygons = []; // Polygons that contains the road etc
-        for (var i = 0; i < this.POLYTYPE.count; i++) {
+        for (let i = 0; i < this.POLYTYPE.count; i++) {
             this.polygons[i] = [];
         }
 
@@ -36,27 +40,31 @@ export default class {
 
     //
     editMap(levelNumber) {
-        // set correct background, bounds, camera etc;
-        this.levelNumber = levelNumber;
-        this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level' + this.levelNumber);
-        game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
-        this.currentLevel.scale.setTo(this.levelScale);
+        this.loadMap(levelNumber, null, null);
 
-        this.loadMap(levelNumber);
+        this.game.input.onDown.add(this.mouseDown, this);
+        this.game.input.addMoveCallback(this.mouseMove, this);
+        this.game.input.onUp.add(this.mouseUp, this);
 
-        game.input.onDown.add(this.mouseDown, this);
-        game.input.addMoveCallback(this.mouseMove, this);
-        game.input.onUp.add(this.mouseUp, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.addPolygon, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.Z).onDown.add(this.undoPolygon, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function() { this.selectedLayer = this.POLYTYPE.road; }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function () { this.selectedLayer = this.POLYTYPE.boost; }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function () { this.selectedLayer = this.POLYTYPE.collision; }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(function () {
+            this.startPositions[this.selectedPosition].x = this.game.input.x + this.game.camera.x;
+            this.startPositions[this.selectedPosition].y = this.game.input.y + this.game.camera.y;
+            this.startRects[this.selectedPosition].x = this.startPositions[this.selectedPosition].x - 10;
+            this.startRects[this.selectedPosition].y = this.startPositions[this.selectedPosition].y - 10;
+            this.selectedPosition = (this.selectedPosition >= this.startPositions.length - 1) ? 0 : this.selectedPosition + 1;
+        }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.X).onDown.add(function () { this.path.add(this.game.input.x + this.game.camera.x - 150, this.game.input.y + this.game.camera.y - 150); }, this);
+        // this.game.input.keyboard.addKey(Phaser.Keyboard.V).onDown.add(function () { this.path.pathPoints.splice(-1, 1); console.log(this.path.pathPoints.length); }, this);
 
-        game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.addPolygon, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.Z).onDown.add(this.undoPolygon, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function() { this.selectedLayer = this.POLYTYPE.road; }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function () { this.selectedLayer = this.POLYTYPE.boost; }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function () { this.selectedLayer = this.POLYTYPE.collision; }, this);
-        // this.exportKey
-        game.input.keyboard.addKey(Phaser.Keyboard.F1).onDown.add(function () { this.loadMap(1); }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.F2).onDown.add(function () { this.loadMap(2); }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.F3).onDown.add(function () { this.loadMap(3); }, this);
+        // load
+        this.game.input.keyboard.addKey(Phaser.Keyboard.F1).onDown.add(function () { this.loadMap(1); }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.F2).onDown.add(function () { this.loadMap(2); }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.F3).onDown.add(function () { this.loadMap(3); }, this);
 
         this.exportKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
         this.exportKey.onDown.add(this.exportLevel, this);
@@ -65,16 +73,16 @@ export default class {
     }
 
     // 
-    loadMap(levelNumber) {
+    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
         // set correct background, bounds, camera etc;
         this.levelNumber = levelNumber;
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+this.levelNumber);
-        game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
+        this.game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
         this.currentLevel.scale.setTo(this.levelScale);
 
         // load map from file
         let json = require('../../assets/levels/level'+this.levelNumber+'.json');
-        console.log(json);
+        console.log(this.game);
 
         this.graphics = this.game.add.graphics(0, 0);
         for (let i = 0; i < json.road.length; i++) {
@@ -82,7 +90,6 @@ export default class {
             this.polygons[this.POLYTYPE.road].push(new Phaser.Polygon(
                 poly._points
             ));
-            console.log('road');
             this.graphics.lineStyle(1, 0x11eeee);
             this.graphics.drawPolygon(poly._points);
             this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
@@ -92,7 +99,6 @@ export default class {
             this.polygons[this.POLYTYPE.boost].push(new Phaser.Polygon(
                 poly._points
             ));
-            console.log('boost');
             this.graphics.lineStyle(1, 0xee11ee);
             this.graphics.drawPolygon(poly._points);
             this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
@@ -102,18 +108,35 @@ export default class {
             this.polygons[this.POLYTYPE.collision].push(new Phaser.Polygon(
                 poly._points
             ));
-            console.log('collision');
             this.graphics.lineStyle(1, 0xee11ee);
             this.graphics.drawPolygon(poly._points);
             this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
 
+        for (let i = 0; i < json.startPositions.length; i++) {
+            this.startPositions[i] = json.startPositions[i];
+        }
 
-
-        console.log(this.polygons);
+        this.path.pathPoints = [];
+        for (let i = 0; i < json.path.length; i++) {
+            let p = json.path[i];
+            this.path.add(p.x, p.y);
+        }
 
         // set player position etc
-        // game.player.x = XXX;
+        this.state.player.body.x = this.startPositions[0].x;
+        this.state.player.body.y = this.startPositions[0].y;
+
+        if (powerUpCollisionGroup && opponentCollisionGroup) {
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
+        }
+
+        // Emil approved hardcode
+        if (levelNumber == 1) {
+            this.state.player.body.angle = 270;
+        }
     }
 
 
@@ -123,7 +146,6 @@ export default class {
 
     // render mapedit and debug stuff
     render() {
-
         // game.debug.cameraInfo(game.camera, 4, 16);
         let tmp = {
             x: game.input.x + game.camera.x,
@@ -131,6 +153,12 @@ export default class {
         }
         game.debug.text("x:" + tmp.x + " y:" + tmp.y, 830, 710);
         game.debug.text("layer:" + this.selectedLayer, 830, 692);
+
+
+        for (let i = 0; i < this.startRects.length; i++) {
+            let rect = this.startRects[i];
+            game.debug.geom(rect);
+        }
 
         // // debug polygons
         // for (let i = 0; i < this.roadPolygons.length; i++) {
@@ -258,14 +286,23 @@ export default class {
 
     // export current level to json
     exportLevel() {
+        let pp = [];
+        for (var i = 0; i < this.path.pathPoints.length; i++) {
+            var element = this.path.pathPoints[i];
+            pp.push({
+                x: element.x,
+                y: element.y
+            });
+        }
         let levelData = {
             road: this.polygons[this.POLYTYPE.road],
             boost: this.polygons[this.POLYTYPE.boost],
-            collision: this.polygons[this.POLYTYPE.collision]
+            collision: this.polygons[this.POLYTYPE.collision],
+            path: pp,
+            startPositions: this.startPositions
             // add start position etc
         };
         let jsonLevel = JSON.stringify(levelData);
-        console.log(jsonLevel);
         let blob = new Blob([jsonLevel], { type: "application/json" });
         let textToSaveAsURL = window.URL.createObjectURL(blob);
         let fileNameToSaveAs = 'level' + this.levelNumber + ".json";
