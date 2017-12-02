@@ -5,11 +5,14 @@ export default class extends Phaser.State {
   init () {}
 
   preload () {
-    this.loaderBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBg')
-    this.loaderBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBar')
-    centerGameObjects([this.loaderBg, this.loaderBar])
+    this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash')
+    this.splash.x = 0;
+    this.splash.y = 0;
+    this.splash.width = this.game.width;
+    this.splash.height = this.game.height;
+    
 
-    this.load.setPreloadSprite(this.loaderBar)
+    this.load.setPreloadSprite(this.splash)
     //
     // load your assets
     //
@@ -28,6 +31,6 @@ export default class extends Phaser.State {
 
   create () {
     game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
-    this.state.start('Game')
+    //this.state.start('Game')
   }
 }
