@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Util from '../util/util';
 
 export default class extends Phaser.Sprite {
   constructor(game, x, y, asset, path, powerUpCollisionGroup) {
@@ -11,26 +12,56 @@ export default class extends Phaser.Sprite {
     this.game.physics.p2.enable(this, false);
     this.game.add.existing(this);
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
+    this.speed = 300;
+    this.velocity = 0;
+    this.util = new Util();
   }
 
   update() {
     let pathPoint = this.path.get(this.pathIndex);
-    this.accelerateTo(pathPoint, 60);
+    this.accelerateTo(pathPoint, this.speed);
 
     this.checkPath(pathPoint);
+
+    //this.util.constrainVelocity(this, 15);
   }
 
   accelerateTo(goal, speed) {
-    if (typeof speed === 'undefined') { speed = 60; }
-    var angle = Math.atan2(goal.y - this.y, goal.x - this.x);
-    this.body.rotation = angle + game.math.degToRad(90);
-    this.body.force.x = Math.cos(angle) * speed;
-    this.body.force.y = Math.sin(angle) * speed;
+
+    this.body.damping = 0.94;
+    this.body.setZeroRotation();
+    this.body.thrust(800);
+
+    
+    
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                this.body.rotateLeft(50);
+            }
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                this.body.rotateRight(50);
+            }
+            
+
+        } else {
+            if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
+                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                    this.body.rotateLeft(10);
+                }
+                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                    this.body.rotateRight(10);
+                }
+            }
+
+        }
   }
 
-  onPowerUp() {
-    
-    console.log("Derp");
+  onPowerUp(powerUp) {
+    if(powerUp.type) {
+
+    }
+    console.log(powerUp);
   }  
 
   checkPath(pathPoint) {
