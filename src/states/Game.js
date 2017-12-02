@@ -51,7 +51,7 @@ export default class extends Phaser.State {
     this.game.add.existing(this.player);
     this.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup);
       
-    //this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
+    this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
   }
 
   hitPlayerOrOpponent(body1, body2) {
