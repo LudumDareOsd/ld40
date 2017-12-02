@@ -24,8 +24,9 @@ export default class extends Phaser.Sprite {
 
         if (this.type == 'nos') {
             powSprite.sprite.kill();
-            this.thePlayer.addThrust(this.nosThrust, this.nosTimeSec);
-            this.stateUse.removePowerup(this.type);
+            this.thePlayer.addPow(this.type, this.nosThrust, this.nosTimeSec);
+            this.stateUse.removePowerup(this.type); // remove from game/state
+            this.stateUse.showPowOnHud(this.type);
         }
     }
 
