@@ -10,19 +10,23 @@ export default class extends Phaser.State {
   preload() { }
 
   create() {
+    //this.game.add.tileSprite(0, 0, 2048, 2048, 'level1');
+    //this.game.world.setBounds(0, 0, 2048, 2048);
     //this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.p2.setImpactEvents(true);
-    this.physics.p2.restitution = 0.8;
+    this.physics.p2.restitution = 0.2;
       
-    this.map = new Map();
-      
+    // TODO Set actual starting pos for player
     this.player = new Player({
       game: this.game,
-      x: 150,
-      y: 150,
+      x: this.game.world.centerX,
+      y: this.game.world.centerY,
       asset: 'playercar'
     });
+      
+    this.map = new Map();
+    this.map.loadMap(1);
 
     var playerCollisionGroup = this.physics.p2.createCollisionGroup();
     var opponentCollisionGroup = this.physics.p2.createCollisionGroup();
@@ -30,13 +34,17 @@ export default class extends Phaser.State {
     this.physics.p2.updateBoundsCollisionGroup();
 
     this.physics.p2.enable(this.player, false);
-    this.player.body.setCircle(16);
+    this.player.body.setCircle(32);
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
 
-    this.map.loadMap(1);
     this.game.add.existing(this.player);
     this.createOpponents();
+      
+    this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
+      //this.game.camera.unfollow();
+    //this.player.fixedToCamera = true;
+    //this.player.cameraOffset.setTo(10, 10);
   }
     
   hitPlayerOrOpponent(body1, body2) {
