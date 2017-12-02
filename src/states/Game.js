@@ -56,7 +56,7 @@ export default class extends Phaser.State {
       
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
       
-    //this.createHud(this.player);
+    this.createHud(this.player);
   }
 
   hitPlayerOrOpponent(body1, body2) {
@@ -91,6 +91,21 @@ export default class extends Phaser.State {
   createHud(carplayer) {
     var hud = this.game.add.group();
       
+    this.hudPowerup = new HudSpeedometer({
+      game: this.game,
+      x: 960-(108),
+      y: 0,
+      asset: 'hud-powerup'
+    });
+      
+    this.hudGoreometer = new HudSpeedometer({
+      game: this.game,
+      x: 960-(653),
+      y: 720-42,
+      asset: 'hud-goreometer'
+    });
+      
+    /* SPEEDOMETER low prio, not working right now
     this.hudSpeedometer = new HudSpeedometer({
       game: this.game,
       x: 0,
@@ -109,6 +124,10 @@ export default class extends Phaser.State {
       
     hud.add(this.hudSpeedometer);
     hud.add(this.hudSpeedPin);
+    */
+      
+    hud.add(this.hudPowerup);
+    hud.add(this.hudGoreometer);
       
     this.game.add.existing(hud);
       
