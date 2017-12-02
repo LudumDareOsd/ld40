@@ -19,6 +19,7 @@ export default class extends Phaser.State {
   }
 
   create () {
+    game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
     this.state.start('Game')
   }
 }
