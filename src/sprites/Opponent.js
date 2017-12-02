@@ -1,17 +1,15 @@
 import Phaser from 'phaser'
 
 export default class extends Phaser.Sprite {
-  constructor ({ game, x, y, asset }) {
+  constructor (game, x, y, asset, path) {
     super(game, x, y, asset);
+    this.scale.setTo(2);
     this.anchor.setTo(0.5);
-    this.goal = {
-      x: 400,
-      y: 100
-    };
+    this.path = path;
   }
 
   update () {
-    this.accelerateTo(this.goal, 60);
+    //this.accelerateTo(this.goal, 60);
   }
 
   accelerateTo(goal, speed) {
