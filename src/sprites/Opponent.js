@@ -1,12 +1,16 @@
 import Phaser from 'phaser'
 
 export default class extends Phaser.Sprite {
-  constructor(game, x, y, asset, path) {
+  constructor(game, x, y, asset, path, powerUpCollisionGroup) {
     super(game, x, y, asset);
+    this.game = game;
+    this.game.physics.p2.enable(this, false);
+    this.game.add.existing(this);
     this.scale.setTo(2);
     this.anchor.setTo(0.5);
     this.pathIndex = 0;
     this.path = path;
+    this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
   }
 
   update() {
@@ -23,6 +27,10 @@ export default class extends Phaser.Sprite {
     this.body.force.x = Math.cos(angle) * speed;
     this.body.force.y = Math.sin(angle) * speed;
   }
+
+  onPowerUp() {
+    console.log("Derp");
+  }  
 
   checkPath(pathPoint) {
     let collision = this.AABB(this, pathPoint);

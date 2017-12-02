@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import Player from '../sprites/PlayerMcPlayerFace'
 import Opponent from '../sprites/Opponent';
+import PowerUp from '../sprites/PowerUp'
 import Map from '../map/Map';
 import Path from '../map/Path';
 
@@ -14,10 +15,11 @@ export default class extends Phaser.State {
     this.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.p2.setImpactEvents(true);
     this.physics.p2.restitution = 0.8;
-      
+
     this.map = new Map();
     this.path = new Path(this.game);
-      
+    this.powerUps = [];
+
     this.player = new Player({
       game: this.game,
       x: 150,
@@ -27,6 +29,7 @@ export default class extends Phaser.State {
 
     var playerCollisionGroup = this.physics.p2.createCollisionGroup();
     var opponentCollisionGroup = this.physics.p2.createCollisionGroup();
+    var powerUpCollisionGroup = this.physics.p2.createCollisionGroup();
 
     this.physics.p2.updateBoundsCollisionGroup();
 
@@ -39,15 +42,16 @@ export default class extends Phaser.State {
 
     this.path.add(500, 500);
     this.path.add(500, 1000);
+    this.powerUps.push(new PowerUp(this.game, 200, 500));
 
     this.game.add.existing(this.player);
-    this.createOpponents(this.path);
+    this.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup);
   }
-    
+
   hitPlayerOrOpponent(body1, body2) {
     body2.sprite.alpha -= 0.05;
   }
-    
+
   hitEnemy(body1, body2) {
     body2.sprite.alpha -= 0.20;
   }
@@ -59,13 +63,12 @@ export default class extends Phaser.State {
     }
   }
 
-  createOpponents(path) {
+  createOpponents(path, powerUpCollisionGroup, opponentCollisionGroup) {
     this.opponents = this.game.add.group();
 
-    let opponent = new Opponent(game, 100, 100, 'car', path);
-
-    this.game.physics.p2.enable(opponent, false);
-
-    this.game.add.existing(opponent);
+    for (let i = 0; i < 4; i++) {
+      let opponent = new Opponent(game, 100 * i, 100, 'car', path, powerUpCollisionGroup);
+      opponent.body.setCollisionGroup(opponentCollisionGroup);
+    }
   }
 }
