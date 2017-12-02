@@ -9,8 +9,8 @@ export default class {
 
     loadMap(mapNumber) {
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+mapNumber);
-        game.world.setBounds(0, 0, (2048 * 3) - 320, (2048 * 3) - 240);
-        this.currentLevel.scale.setTo(3, 3);
+        game.world.setBounds(0, 0, (2048 * 2) - 320, (2048 * 2) - 240);
+        this.currentLevel.scale.setTo(2, 2);
 
         // set camera
         game.camera.width = 320;
