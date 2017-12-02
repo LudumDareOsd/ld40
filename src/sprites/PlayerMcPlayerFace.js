@@ -8,32 +8,34 @@ export default class extends Phaser.Sprite {
   }
 
   update () {
-      
-    this.body.damping = 0.94;
+
     this.body.setZeroRotation();
       
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-        
+    
+        this.body.damping = 0.94; //0.94=road, 0.98=off road?
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             this.body.rotateLeft(50);
         }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
             this.body.rotateRight(50);
         }
-        this.body.thrust(800);
+        this.body.thrust(1500);
         
     } else {
-        if(Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
+
+        if(Math.abs(this.body.velocity.x) > 50 || Math.abs(this.body.velocity.y) > 50) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                this.body.rotateLeft(10);
+                this.body.rotateLeft(20);
             } 
             else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-                this.body.rotateRight(10);
+                this.body.rotateRight(20);
             }
         }
-
+        this.body.damping = 0.98;
     }      
-      
+    
+    //this.constrainVelocity(30); // if off-road go slower
     //this.body.velocity.x = 0;
  
     /*
@@ -55,8 +57,7 @@ export default class extends Phaser.Sprite {
         this.body.damping = 0.8;
     }
     */
-      
-    this.constrainVelocity(15);
+    
   }
     
 // http://www.html5gamedevs.com/topic/9835-is-there-a-proper-way-to-limit-the-speed-of-a-p2-body/
