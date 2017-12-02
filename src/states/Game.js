@@ -42,7 +42,8 @@ export default class extends Phaser.State {
 
     this.path.add(500, 500);
     this.path.add(500, 1000);
-    this.powerUps.push(new PowerUp(this.game, 200, 500));
+
+    this.createPowerUps(powerUpCollisionGroup);
 
     this.game.add.existing(this.player);
     this.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup);
@@ -67,8 +68,13 @@ export default class extends Phaser.State {
     this.opponents = this.game.add.group();
 
     for (let i = 0; i < 4; i++) {
-      let opponent = new Opponent(game, 100 * i, 100, 'car', path, powerUpCollisionGroup);
+      let opponent = new Opponent(game, 100 + 100 * i, 100, 'car', path, powerUpCollisionGroup);
       opponent.body.setCollisionGroup(opponentCollisionGroup);
     }
+  }
+
+  createPowerUps(powerUpCollisionGroup) {
+    let PU = new PowerUp(this.game, 450, 400, '', 0, powerUpCollisionGroup)
+    this.powerUps.push(PU);
   }
 }
