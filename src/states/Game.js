@@ -2,6 +2,7 @@
 import Phaser from 'phaser';
 
 import Opponent from '../sprites/Opponent';
+import Map from '../map/Map';
 
 export default class extends Phaser.State {
 
@@ -10,13 +11,15 @@ export default class extends Phaser.State {
 
   create() {
     this.game.physics.startSystem(Phaser.Physics.P2JS);
-   
+    this.map = new Map();
+
+    this.map.loadMap(1);
     this.createOpponents();
   }
 
   render() {
+    this.map.render();
     if (__DEV__) {
-      
     }
   }
 

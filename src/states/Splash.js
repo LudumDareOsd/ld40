@@ -12,7 +12,7 @@ export default class extends Phaser.State {
     this.load.setPreloadSprite(this.loaderBar)
     
     this.load.image('car', 'assets/images/player-base.png');
-
+    this.load.image('level1', 'assets/images/level1.png');
   }
 
   create () {
