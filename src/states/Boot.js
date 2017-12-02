@@ -22,6 +22,8 @@ export default class extends Phaser.State {
     text.anchor.setTo(0.5, 0.5)
 
     this.load.image('splash', './assets/images/title-screen.png');
+    this.game.load.spritesheet('playBtn', './assets/images/play-btn.png', 57, 42);
+    this.game.load.spritesheet('aboutBtn', './assets/images/about-btn.png', 68, 33);
   }
 
   render () {

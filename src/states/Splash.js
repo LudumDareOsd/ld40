@@ -27,10 +27,33 @@ export default class extends Phaser.State {
     this.load.image('hud-speedpin', 'assets/images/speed-pin.png');
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');
     this.load.image('hud-goreometer', 'assets/images/Gore-O-Meter.png');
+    this.load.image('about', './assets/images/title-screen.png');
   }
 
   create () {
-    game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
-    //this.state.start('Game')
+    this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
+
+    this.playBtn = this.game.add.button(10 * 3, 188 * 3, 'playBtn', this.onPlayClick, this, 2, 1, 0);
+    this.playBtn.width = 171;
+    this.playBtn.height = 126;
+    this.playBtn.smoothed = false;
+
+    this.aboutBtn = this.game.add.button(242 * 3, 192 * 3, 'aboutBtn', this.onAboutClick, this, 2, 1, 0);
+    this.aboutBtn.width = 204;
+    this.aboutBtn.height = 99;
+    this.aboutBtn.smoothed = false;
+    
+  }
+
+  hover() {
+
+  }
+
+  onPlayClick() {
+    this.state.start('Game')
+  }
+
+  onAboutClick() {
+    this.state.start('About');
   }
 }
