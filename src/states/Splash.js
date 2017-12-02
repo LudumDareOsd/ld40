@@ -19,7 +19,7 @@ export default class extends Phaser.State {
     this.load.image('level1', 'assets/images/level1.png');
     this.load.image('level2', 'assets/images/level2.png');
     this.load.image('level3', 'assets/images/level3.png');
-    this.load.image('nos', 'assets/images/Speed-NOS.png');
+    this.load.image('pw-nos', 'assets/images/Speed-NOS.png');
     this.load.image('hud-speedometer', 'assets/images/Speedometer.png');
     this.load.image('hud-speedpin', 'assets/images/speed-pin.png');
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');

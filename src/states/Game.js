@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 import Player from '../sprites/PlayerMcPlayerFace'
 import Opponent from '../sprites/Opponent';
 import PowerUp from '../sprites/PowerUp'
-import HudSpeedometer from '../sprites/HudSpeedometer'
+import HudObject from '../sprites/HudSpeedometer'
 import HudSpeedPin from '../sprites/HudSpeedPin'
 import Map from '../map/Map';
 import Path from '../map/Path';
@@ -45,11 +45,12 @@ export default class extends Phaser.State {
     this.player.body.setCircle(32);
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
+    this.player.body.collides(powerUpCollisionGroup);
 
     this.path.add(500, 500);
     this.path.add(500, 1000);
 
-    this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup);
+    this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
 
     this.game.add.existing(this.player);
     this.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup);
@@ -83,30 +84,30 @@ export default class extends Phaser.State {
     }
   }
 
-  createPowerUps(powerUpCollisionGroup, opponentCollisionGroup) {
-    let pu = new PowerUp(this.game, 450, 400, 'nos', 0, powerUpCollisionGroup, opponentCollisionGroup)
+  createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+    let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup)
     this.powerUps.push(pu);
   }
 
   createHud(carplayer) {
     var hud = this.game.add.group();
       
-    this.hudPowerup = new HudSpeedometer({
+    this.hudPowerup = new HudObject({
       game: this.game,
-      x: 960-(108),
+      x: 960-(54*3),
       y: 0,
       asset: 'hud-powerup'
     });
       
-    this.hudGoreometer = new HudSpeedometer({
+    this.hudGoreometer = new HudObject({
       game: this.game,
-      x: 960-(653),
-      y: 720-42,
+      x: 960-(960-87*3),
+      y: 720-(21*3),
       asset: 'hud-goreometer'
     });
       
     /* SPEEDOMETER low prio, not working right now
-    this.hudSpeedometer = new HudSpeedometer({
+    this.hudSpeedometer = new HudObject({
       game: this.game,
       x: 0,
       y: 0,
