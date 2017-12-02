@@ -19,7 +19,7 @@ export default class extends Phaser.State {
     this.physics.p2.setImpactEvents(true);
     this.physics.p2.restitution = 0.2;
       
-    this.map = new Map();
+    this.map = new Map(this.game);
     this.map.loadMap(1);
     this.path = new Path(this.game);
     this.powerUps = [];
