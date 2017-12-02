@@ -12,8 +12,9 @@ export default class extends Phaser.Sprite {
     this.game.physics.p2.enable(this, false);
     this.game.add.existing(this);
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
-    this.speed = 300;
     this.velocity = 0;
+    this.speed = this.game.rnd.integerInRange(800, 1200);
+    this.offset = this.game.rnd.integerInRange(50, 250);
     this.util = new Util();
   }
 
@@ -22,39 +23,19 @@ export default class extends Phaser.Sprite {
     this.accelerateTo(pathPoint, this.speed);
 
     this.checkPath(pathPoint);
-
-    //this.util.constrainVelocity(this, 15);
   }
 
-  accelerateTo(goal, speed) {
+  accelerateTo(target, speed) {
 
     this.body.damping = 0.94;
     this.body.setZeroRotation();
-    this.body.thrust(800);
+    this.body.thrust(speed);
 
-    
-    
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+    let deltaAngle = this.game.math.angleBetween(this.x, this.y, target.x + this.offset, target.y + this.offset);
+    deltaAngle += 1.57;
 
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                this.body.rotateLeft(50);
-            }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                this.body.rotateRight(50);
-            }
-            
-
-        } else {
-            if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
-                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                    this.body.rotateLeft(10);
-                }
-                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                    this.body.rotateRight(10);
-                }
-            }
-
-        }
+    let rotation = this.game.math.rotateToAngle(this.body.rotation, deltaAngle);
+    this.body.rotation = rotation;
   }
 
   onPowerUp(powerUp) {
