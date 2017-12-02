@@ -1,11 +1,17 @@
 import Phaser from 'phaser';
 
 export default class extends Phaser.Sprite {
-    constructor(game, x, y, asset, type, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+    constructor(game, x, y, asset, type, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, playerObject, stateUsed) {
         super(game, x, y, asset);
         this.game = game;
         this.type = type;
+        this.thePlayer = playerObject;
+        this.stateUse = stateUsed;
         this.scale.setTo(3);
+
+        // *** NOS
+        this.nosTimeSec = 3;
+        this.nosThrust = 800;
 
         this.game.add.existing(this); 
         this.game.physics.p2.enable(this, false);
@@ -17,7 +23,9 @@ export default class extends Phaser.Sprite {
     playerTakesPowerup(powSprite, playerSprite) {
 
         if(this.type == 'nos') {
-            powSprite.sprite.alpha -= 0.20;
+            powSprite.sprite.kill();
+            this.thePlayer.addThrust(this.nosThrust, this.nosTimeSec);
+            this.stateUse.removePowerup(this.type);
         }
     }
 }
