@@ -43,8 +43,14 @@ export default class extends Phaser.State {
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
 
-    this.path.add(500, 500);
-    this.path.add(500, 1000);
+    this.path.add(500, 100);
+    this.path.add(500, 600);
+    this.path.add(500, 1100);
+    this.path.add(500, 1600);
+    this.path.add(1000, 1600);
+    this.path.add(1500, 1600);
+    this.path.add(1500, 1100);
+    this.path.add(1500, 600);
 
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup);
 
@@ -75,6 +81,7 @@ export default class extends Phaser.State {
       let opponent = new Opponent(game, 100 + 100 * i, 100, 'car', path, powerUpCollisionGroup);
       opponent.body.setCollisionGroup(opponentCollisionGroup);
       opponent.body.collides([opponentCollisionGroup, powerUpCollisionGroup]);
+      this.game.camera.follow(opponent, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
     }
   }
 

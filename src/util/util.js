@@ -26,10 +26,6 @@ export default class {
     };
 
     getAngle(body1, body2) {
-        // angle in radians
-        var angleRadians = Math.atan2(body2.y - body1.y, body2.x - body1.x);
-        // angle in degrees
-        var angleDeg = (Math.atan2(body2.y - body1.y, body2.x - body1.x) * 180 / Math.PI);
-        return angleDeg;
+        return (Math.atan2(body2.centerY - body1.y, body2.centerX - body1.x) * 180 / Math.PI);
     }
 }
