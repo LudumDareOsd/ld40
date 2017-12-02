@@ -14,7 +14,7 @@ export default class extends Phaser.Sprite {
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
     this.velocity = 0;
     this.speed = this.game.rnd.integerInRange(800, 1200);
-    this.offset = this.game.rnd.integerInRange(100, 200);
+    this.offset = this.game.rnd.integerInRange(50, 250);
     this.util = new Util();
   }
 

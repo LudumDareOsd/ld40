@@ -6,9 +6,7 @@ export default class extends Phaser.Sprite {
         
 
         var rect = game.make.bitmapData(200, 200);
-
         rect.ctx.fillStyle = '#ff0000';
-
         rect.ctx.fillRect(0, 0, 200, 200);
         
         super(game, x, y, rect);
