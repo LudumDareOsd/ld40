@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import Player from '../sprites/PlayerMcPlayerFace'
 import Opponent from '../sprites/Opponent';
+import Pedo from '../sprites/Pedo';
 import PowerUp from '../sprites/PowerUp'
 import HudObject from '../sprites/HudSpeedometer'
 import HudSpeedPin from '../sprites/HudSpeedPin'
@@ -37,19 +38,26 @@ export default class extends Phaser.State {
     var playerCollisionGroup = this.physics.p2.createCollisionGroup();
     var opponentCollisionGroup = this.physics.p2.createCollisionGroup();
     var powerUpCollisionGroup = this.physics.p2.createCollisionGroup();
+    var pedoCollisionGroup = this.physics.p2.createCollisionGroup();
 
     this.physics.p2.updateBoundsCollisionGroup();
-
     this.physics.p2.enable(this.player, false);
     this.player.body.setCircle(32);
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
     this.player.body.collides(powerUpCollisionGroup);
+    this.player.body.collides(pedoCollisionGroup);
+
 
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
     this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
+    for (var i = 0; i < 300; i++) {
+      var pedo = new Pedo(this.game, Math.floor(4096 * Math.random()), Math.floor(4096 * Math.random()), 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
+      // var pedo = new Pedo(this.game, this.player.body.x, this.player.body.y, 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
+    }
     this.game.add.existing(this.player);
     this.createHud(this.player);
+    
       
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
     // this.map.editMap(1);

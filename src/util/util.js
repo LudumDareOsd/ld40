@@ -28,4 +28,8 @@ export default class {
     getAngle(body1, body2) {
         return (Math.atan2(body2.centerY - body1.y, body2.centerX - body1.x) * 180 / Math.PI);
     }
+
+    clamp(min, max, n) {
+        return Math.min(Math.max(n, min), max);
+    }
 }
