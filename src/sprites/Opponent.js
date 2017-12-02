@@ -29,6 +29,7 @@ export default class extends Phaser.Sprite {
   }
 
   onPowerUp() {
+    
     console.log("Derp");
   }  
 
