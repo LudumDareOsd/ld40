@@ -3,8 +3,11 @@ import Phaser from 'phaser'
 import Player from '../sprites/PlayerMcPlayerFace'
 import Opponent from '../sprites/Opponent';
 import PowerUp from '../sprites/PowerUp'
+import HudSpeedometer from '../sprites/HudSpeedometer'
+import HudSpeedPin from '../sprites/HudSpeedPin'
 import Map from '../map/Map';
 import Path from '../map/Path';
+//import Hud from '../sprites/HudGroup';
 
 export default class extends Phaser.State {
 
@@ -23,7 +26,7 @@ export default class extends Phaser.State {
     this.map.loadMap(1);
     this.path = new Path(this.game);
     this.powerUps = [];
-
+      
     // TODO Set actual starting pos for player
     this.player = new Player({
       game: this.game,
@@ -52,6 +55,8 @@ export default class extends Phaser.State {
     this.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup);
       
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
+      
+    //this.createHud(this.player);
   }
 
   hitPlayerOrOpponent(body1, body2) {
@@ -81,5 +86,34 @@ export default class extends Phaser.State {
   createPowerUps(powerUpCollisionGroup) {
     let pu = new PowerUp(this.game, 450, 400, 'nos', 0, powerUpCollisionGroup)
     this.powerUps.push(pu);
+  }
+
+  createHud(carplayer) {
+    var hud = this.game.add.group();
+      
+    this.hudSpeedometer = new HudSpeedometer({
+      game: this.game,
+      x: 0,
+      y: 0,
+      asset: 'hud-speedometer'
+    });
+      
+    this.hudSpeedPin = new HudSpeedPin({
+      game: this.game,
+      x: 52,
+      y: 50,
+      asset: 'hud-speedpin'
+    });
+      
+    //this.hudSpeedometer.fixedToCamera = true;
+      
+    hud.add(this.hudSpeedometer);
+    hud.add(this.hudSpeedPin);
+      
+    this.game.add.existing(hud);
+      
+    hud.fixedToCamera = true;
+      
+    this.game.world.bringToTop(hud);
   }
 }
