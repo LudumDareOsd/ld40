@@ -16,6 +16,7 @@ export default class extends Phaser.State {
     this.physics.p2.restitution = 0.8;
       
     this.map = new Map();
+    this.path = new Path(this.game);
       
     this.player = new Player({
       game: this.game,
@@ -35,19 +36,12 @@ export default class extends Phaser.State {
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
 
     this.map.loadMap(1);
-<<<<<<< HEAD
-    
-    this.path = new Path(this.game);
+
     this.path.add(500, 500);
-    this.path.add(1000, 500);
+    this.path.add(500, 1000);
 
-    this.createOpponents(this.path);
-
-    
-=======
     this.game.add.existing(this.player);
-    this.createOpponents();
->>>>>>> ab49daa0930dfc63f9f8a099f390348fc94e6ae4
+    this.createOpponents(this.path);
   }
     
   hitPlayerOrOpponent(body1, body2) {
