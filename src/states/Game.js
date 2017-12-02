@@ -32,7 +32,8 @@ export default class extends Phaser.State {
       game: this.game,
       x: this.game.world.centerX,
       y: this.game.world.centerY,
-      asset: 'playercar'
+      asset: 'playercar',
+      stateObj: this
     });
 
     var playerCollisionGroup = this.physics.p2.createCollisionGroup();
@@ -92,8 +93,34 @@ export default class extends Phaser.State {
   }
 
   createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
-    let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
-    this.powerUps.push(pu);
+    var powsJson = {
+        "Params": [{
+            "PwoType": "nos",
+            "Asset": "pw-nos",
+            "X": this.game.world.centerX-200,
+            "Y": this.game.world.centerY
+          },{
+            "PwoType": "nos",
+            "Asset": "pw-nos",
+            "X": this.game.world.centerX-100,
+            "Y": this.game.world.centerY
+          }
+          ,{
+            "PwoType": "nos",
+            "Asset": "pw-nos",
+            "X": this.game.world.centerX-300,
+            "Y": this.game.world.centerY
+          }
+        ]
+    }
+
+    for (var i = 0, len = powsJson.Params.length; i < len; i++) {
+      let pu = new PowerUp(this.game, powsJson.Params[i].X, powsJson.Params[i].Y, powsJson.Params[i].Asset, powsJson.Params[i].PwoType, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+      this.powerUps.push(pu);
+    }
+
+    //let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+    //this.powerUps.push(pu);
   }
 
   removePowerup(powType) {
@@ -101,20 +128,22 @@ export default class extends Phaser.State {
   }
 
   createHud(carplayer) {
-    var hud = this.game.add.group();
+    this.hud = this.game.add.group();
       
     this.hudPowerup = new HudObject({
       game: this.game,
       x: 960-(54*3),
       y: 0,
-      asset: 'hud-powerup'
+      asset: 'hud-powerup',
+      scale: 3
     });
       
     this.hudGoreometer = new HudObject({
       game: this.game,
       x: 960-(960-87*3),
       y: 720-(21*3),
-      asset: 'hud-goreometer'
+      asset: 'hud-goreometer',
+      scale: 3
     });
       
     /* SPEEDOMETER low prio, not working right now
@@ -138,13 +167,35 @@ export default class extends Phaser.State {
     hud.add(this.hudSpeedPin);
     */
       
-    hud.add(this.hudPowerup);
-    hud.add(this.hudGoreometer);
+    this.hud.add(this.hudPowerup);
+    this.hud.add(this.hudGoreometer);
       
-    this.game.add.existing(hud);
+    this.game.add.existing(this.hud);
       
-    hud.fixedToCamera = true;
+    this.hud.fixedToCamera = true;
       
-    this.game.world.bringToTop(hud);
+    this.game.world.bringToTop(this.hud);
+  }
+
+  showPowOnHud(powType) {
+    console.log('showing pow on hud:'+powType);
+    if(powType == 'nos') {
+      if(!this.hudPowNos) {
+        this.hudPowNos = new HudObject({
+          game: this.game,
+          x: 960-(92),
+          y: 45,
+          asset: 'pw-nos',
+          scale: 3
+        });
+        this.hud.add(this.hudPowNos);
+      }
+    }
+  }
+
+  hidePow() {
+    console.log('hide pow on hud');
+    this.hudPowNos.kill();
+    this.hudPowNos = null;
   }
 }
