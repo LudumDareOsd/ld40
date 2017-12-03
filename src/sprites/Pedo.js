@@ -21,6 +21,8 @@ export default class extends Phaser.Sprite {
 
         this.mx = 0;
         this.my = 0;
+
+        this.smoothed = false;
     }
 
     update() {
