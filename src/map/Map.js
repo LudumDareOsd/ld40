@@ -73,7 +73,7 @@ export default class {
     }
 
     // 
-    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup) {
+    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
         // set correct background, bounds, camera etc;
         this.levelNumber = levelNumber;
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+this.levelNumber);
@@ -128,9 +128,9 @@ export default class {
         this.state.player.body.y = this.startPositions[0].y;
 
         if (powerUpCollisionGroup && opponentCollisionGroup) {
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
         }
 
         // Emil approved hardcode
