@@ -77,7 +77,8 @@ export default class {
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+this.levelNumber);
         this.game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
         this.currentLevel.scale.setTo(this.levelScale);
-
+        this.currentLevel.smoothed = false;
+        
         // load map from file
         let json = require('../../assets/levels/level'+this.levelNumber+'.json');
         console.log(this.game);
@@ -311,6 +312,7 @@ export default class {
         let s = this.game.add.sprite(480, 120, 'checkpoint');
         s.anchor.x = 0.5; s.anchor.y = 0.5;
         s.fixedToCamera = true;
+        s.smoothed = false;
         let tween = this.game.add.tween(s.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 0); 
         tween.onComplete.add(function(e) { 
             s.kill();

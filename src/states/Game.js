@@ -223,6 +223,16 @@ export default class extends Phaser.State {
   createHud(carplayer) {
     this.hud = this.game.add.group();
 
+    this.hudSpeedometer = new HudObject({
+      game: this.game,
+      x: 0,
+      y: 0,
+      asset: 'hud-speedometer',
+      scale: 3
+    });
+
+    this.hudSpeedometer.smoothed = false;
+
     this.hudPowerup = new HudObject({
       game: this.game,
       x: 960 - (54 * 3),
@@ -230,6 +240,8 @@ export default class extends Phaser.State {
       asset: 'hud-powerup',
       scale: 3
     });
+
+    this.hudPowerup.smoothed = false;
 
     this.hudGoroMeter = new HudObject({
       game: this.game,
@@ -239,6 +251,8 @@ export default class extends Phaser.State {
       scale: 3
     });
 
+    this.hudGoroMeter.smoothed = false;
+
     this.hudGoreometerBar = new HudObject({
       game: this.game,
       x: 960 - (867 - 87 * 3),
@@ -246,6 +260,8 @@ export default class extends Phaser.State {
       asset: 'hud-goreometer-bar',
       scale: 3
     });
+
+    this.hudGoreometerBar.smoothed = false;
 
     this.hudGoreometerBar.anchor.setTo(0, 0);
 
@@ -276,6 +292,7 @@ export default class extends Phaser.State {
     this.hud.add(this.hudPowerup);
     this.hud.add(this.hudGoroMeter);
     this.hud.add(this.hudGoreometerBar);
+    this.hud.add(this.hudSpeedometer); 
 
     this.game.add.existing(this.hud);
 
@@ -283,8 +300,14 @@ export default class extends Phaser.State {
 
     this.game.world.bringToTop(this.hud);
 
-    this.killCountText = this.game.add.text(10, 685, this.killCount, { font: "26px Arial", fill: "#ffffff", align: "center" });
+    this.killCountText = this.game.add.text(60, 100, this.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
+    this.killCountText.fontWeight = 900;
     this.killCountText.fixedToCamera = true;
+
+    this.lapCountText = this.game.add.text(60, 33, this.player.lap + "/5", { font: "26px Courier New", fill: "#c31919", align: "center" });
+    this.lapCountText.fontWeight = 900;
+    this.lapCountText.fixedToCamera = true;
+
   }
 
   showPowOnHud(powType) {
@@ -308,6 +331,7 @@ export default class extends Phaser.State {
         asset: assetPow,
         scale: 3
       });
+
       this.hud.add(this.hudPowIcon);
     }
 
@@ -322,11 +346,9 @@ export default class extends Phaser.State {
   }
 
   loadAudio() {
-
     this.scream1 = this.game.add.audio('scream1');
     this.scream2 = this.game.add.audio('scream2');
     this.scream3 = this.game.add.audio('scream3');
     this.scream4 = this.game.add.audio('scream4');
-
   }
 }

@@ -29,8 +29,10 @@ export default class extends Phaser.Sprite {
         this.powTimeSec = 0;
         this.isPowActivated = false;
 
-        this.lap = 0;
+        this.lap = 1;
         this.currentCheckpoint = 0;
+
+        this.smoothed = false;
     }
 
     update() {
@@ -115,8 +117,9 @@ export default class extends Phaser.Sprite {
             } else {
                 this.currentCheckpoint++;
             }
-            // WE HAVE FINISHED LAP 3
-            if (this.lap == 4) {
+            // WE HAVE FINISHED LAP 5
+            if (this.lap == 6) {
+                
                 // console.log('YOU ARE WINNAR');
             }
         }

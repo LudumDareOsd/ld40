@@ -21,6 +21,7 @@ export default class extends Phaser.Sprite {
         this.body.setCollisionGroup(powerUpCollisionGroup);
         this.body.collides(opponentCollisionGroup, this.opponentTakesPowerUp, this);
         this.body.collides(playerCollisionGroup, this.playerTakesPowerup, this);
+        this.smoothed = false;
     }
 
     playerTakesPowerup(powSprite, playerSprite) {

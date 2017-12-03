@@ -22,6 +22,7 @@ export default class extends Phaser.Sprite {
 
     this.lap = 0;
     this.currentCheckpoint = 0;
+    this.smoothed = false;
   }
 
   update() {

@@ -33,7 +33,8 @@ export default class extends Phaser.State {
     this.load.image('hud-goreometer', 'assets/images/Gore-O-Meter.png');
     this.load.image('hud-goreometer-bar', 'assets/images/gore-bar.png');
     this.load.image('about-page', './assets/images/about-page.png');
-    this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
+    this.load.image('about-page', './assets/images/about-page.png');
+    this.load.spritesheet('game-over', './assets/images/game-over.png', 63, 25);
     
     this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
     this.game.load.audio('engine', './assets/sound/engine.wav');
@@ -85,6 +86,6 @@ export default class extends Phaser.State {
   }
 
   onAboutClick() {
-    this.state.start('About');
+    this.state.start('GameOver');
   }
 }
