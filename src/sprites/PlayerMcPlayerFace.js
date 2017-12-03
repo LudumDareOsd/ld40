@@ -19,7 +19,7 @@ export default class extends Phaser.Sprite {
         this.engineSound = this.game.add.audio('engine');
         this.engineSound.loopFull(0.1);
         this.volume = 0.1;
-        this.maxVolume = 0.5;
+        this.maxVolume = 0.2;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.game.input.gamepad.start();
         this.pad1 = this.game.input.gamepad.pad1;
@@ -55,6 +55,10 @@ export default class extends Phaser.Sprite {
 
         var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
 
+        let length = Math.sqrt((this.body.velocity.x * this.body.velocity.x) + (this.body.velocity.y * this.body.velocity.y));
+        this.volume = (0.2 + (length * 0.001));
+        this.engineSound.volume = this.volume;
+
         if (isGivingGas) {
 
             if (isLeft) {
@@ -63,12 +67,11 @@ export default class extends Phaser.Sprite {
             else if (isRight) {
                 this.body.rotateRight(50);
             }
-            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
 
-            if (this.volume < this.maxVolume) {
-                this.volume += 0.01;
-                this.engineSound.volume = this.volume;
-            }
+            let totalThrust = this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore; 
+            this.body.thrust(totalThrust);
+
+            
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
@@ -78,10 +81,6 @@ export default class extends Phaser.Sprite {
                 else if (isRight) {
                     this.body.rotateRight(10);
                 }
-            }
-
-            if(this.volume > 0) {
-                this.volume -= 0.01;
             }
         }
 

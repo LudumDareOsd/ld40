@@ -34,7 +34,7 @@ export default class extends Phaser.State {
     this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
 
     this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
-    this.game.load.audio('engine', './assets/sound/engine.mp3');
+    this.game.load.audio('engine', './assets/sound/engine.wav');
   }
 
   create() {
