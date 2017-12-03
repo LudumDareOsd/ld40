@@ -34,6 +34,7 @@ export default class extends Phaser.State {
     this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
 
     this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
+    this.game.load.audio('engine', './assets/sound/engine.mp3');
   }
 
   create() {
@@ -63,9 +64,9 @@ export default class extends Phaser.State {
   playSound() {
     if (!this.bgmStarted) {
       this.bgmStarted = true;
-      this.bgm.loopFull();
+      this.bgm.loopFull(0.3);
     }
-  }
+  } 
 
   hover() {
 

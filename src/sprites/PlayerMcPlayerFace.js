@@ -16,6 +16,9 @@ export default class extends Phaser.Sprite {
         this.boost = 0;
         this.gore = 0;
         this.goroMeter = 0;
+        this.engineSound = this.game.add.audio('engine');
+        this.engineSound.loopFull(1);
+        this.volume = 0.1;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.game.input.gamepad.start();
         this.pad1 = this.game.input.gamepad.pad1;
