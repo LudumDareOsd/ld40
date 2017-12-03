@@ -95,7 +95,8 @@ export default class extends Phaser.Sprite {
 
         if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
             // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
-            console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
+            this.map.checkpoint(this);
+            // console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
             if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
                 this.lap++;
                 this.currentCheckpoint = 0;
@@ -104,7 +105,7 @@ export default class extends Phaser.Sprite {
             }
             // WE HAVE FINISHED LAP 3
             if (this.lap == 4) {
-                console.log('YOU ARE WINNAR');
+                // console.log('YOU ARE WINNAR');
             }
         }
     }

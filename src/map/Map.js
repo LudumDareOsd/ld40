@@ -64,12 +64,6 @@ export default class {
         }, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.X).onDown.add(function () { this.path.add(this.game.input.x + this.game.camera.x - 150, this.game.input.y + this.game.camera.y - 150); }, this);
         // this.game.input.keyboard.addKey(Phaser.Keyboard.V).onDown.add(function () { this.path.pathPoints.splice(-1, 1); console.log(this.path.pathPoints.length); }, this);
-
-        // load
-        this.game.input.keyboard.addKey(Phaser.Keyboard.F1).onDown.add(function () { this.loadMap(1); }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.F2).onDown.add(function () { this.loadMap(2); }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.F3).onDown.add(function () { this.loadMap(3); }, this);
-
         this.exportKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
         this.exportKey.onDown.add(this.exportLevel, this);
 
@@ -94,36 +88,36 @@ export default class {
             this.polygons[this.POLYTYPE.road].push(new Phaser.Polygon(
                 poly._points
             ));
-            this.graphics.lineStyle(1, 0x11eeee);
-            this.graphics.drawPolygon(poly._points);
-            this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            // this.graphics.lineStyle(1, 0x11eeee);
+            // this.graphics.drawPolygon(poly._points);
+            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
         for (let i = 0; i < json.boost.length; i++) {
             let poly = json.boost[i];
             this.polygons[this.POLYTYPE.boost].push(new Phaser.Polygon(
                 poly._points
             ));
-            this.graphics.lineStyle(1, 0xee11ee);
-            this.graphics.drawPolygon(poly._points);
-            this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            // this.graphics.lineStyle(1, 0xee11ee);
+            // this.graphics.drawPolygon(poly._points);
+            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
         for (let i = 0; i < json.collision.length; i++) {
             let poly = json.collision[i];
             this.polygons[this.POLYTYPE.collision].push(new Phaser.Polygon(
                 poly._points
             ));
-            this.graphics.lineStyle(1, 0xee11ee);
-            this.graphics.drawPolygon(poly._points);
-            this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            // this.graphics.lineStyle(1, 0xee11ee);
+            // this.graphics.drawPolygon(poly._points);
+            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
         for (let i = 0; i < json.checkpoints.length; i++) {
             let poly = json.checkpoints[i];
             this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
                 poly._points
             ));
-            this.graphics.lineStyle(1, 0xfef111);
-            this.graphics.drawPolygon(poly._points);
-            this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            // this.graphics.lineStyle(1, 0xfef111);
+            // this.graphics.drawPolygon(poly._points);
+            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
 
         for (let i = 0; i < json.startPositions.length; i++) {
@@ -172,10 +166,10 @@ export default class {
         game.debug.text("layer:" + this.selectedLayer, 830, 692);
 
 
-        for (let i = 0; i < this.startRects.length; i++) {
-            let rect = this.startRects[i];
-            game.debug.geom(rect);
-        }
+        // for (let i = 0; i < this.startRects.length; i++) {
+        //     let rect = this.startRects[i];
+        //     game.debug.geom(rect);
+        // }
 
         // // debug polygons
         // for (let i = 0; i < this.roadPolygons.length; i++) {
@@ -309,6 +303,23 @@ export default class {
             }
         }
         return false;
+    }
+
+    // checkpoint triggered
+    checkpoint(self) {
+        // 480(half screeen)
+        let s = this.game.add.sprite(480, 120, 'checkpoint');
+        s.anchor.x = 0.5; s.anchor.y = 0.5;
+        s.fixedToCamera = true;
+        let tween = this.game.add.tween(s.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 0); 
+        tween.onComplete.add(function(e) { 
+            s.kill();
+        }, this);
+        tween.start();
+
+        // s.sendT();
+        // this.map.currentLevel.sendToBack();
+        // this.game.
     }
 
     // export current level to json
