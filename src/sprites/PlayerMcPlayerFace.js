@@ -22,6 +22,9 @@ export default class extends Phaser.Sprite {
         this.powValue = 0;
         this.powTimeSec = 0;
         this.isPowActivated = false;
+
+        this.lap = 0;
+        this.currentCheckpoint = 0;
     }
 
     update() {
@@ -30,28 +33,44 @@ export default class extends Phaser.Sprite {
         this.body.setZeroRotation();
         this.environmentCheck();
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+        var isPadUsed = this.game.input.gamepad.supported && this.game.input.gamepad.active && this.pad1.connected;
+        var isGivingGas = this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W);
+        var isLeft = this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A);
+        var isRight = game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D);
 
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+        isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
+        isLeft = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
+        isRight = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
+        var isPadPow = isPadUsed && (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
+
+        if (isGivingGas) {
+
+            if (isLeft) {
                 this.body.rotateLeft(50);
             }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+            else if (isRight) {
                 this.body.rotateRight(50);
             }
             this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
-                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+                if (isLeft) {
                     this.body.rotateLeft(10);
                 }
-                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+                else if (isRight) {
                     this.body.rotateRight(10);
                 }
             }
         }
 
+        if(isPadPow) {
+            this.activatePow();
+        }
+
         this.powKey.onDown.add(this.activatePow, this);
+        this.game.input.gamepad.start();
+        this.pad1 = this.game.input.gamepad.pad1;
         //this.util.constrainVelocity(this, 15);
     }
 
@@ -66,6 +85,21 @@ export default class extends Phaser.Sprite {
             this.boost = 1000;
         } else {
             this.boost = 0;
+        }
+
+        if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
+            // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
+            console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
+            if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
+                this.lap++;
+                this.currentCheckpoint = 0;
+            } else {
+                 this.currentCheckpoint++;
+            }
+            // WE HAVE FINISHED LAP 3
+            if (this.lap == 4) {
+                console.log('YOU ARE WINNAR');
+            }
         }
     }
 

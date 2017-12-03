@@ -114,12 +114,16 @@ export default class extends Phaser.State {
       this.powerUps.push(pu);
     }*/
 
-    var nbrOfNosToCreate = this.game.rnd.integerInRange(3, 6);
+    console.log('this world is '+this.game.world.width + ' '+this.game.world.height);
+
+    this.nbrOfNosToCreate = this.game.rnd.integerInRange(3, 5);
     var nbrOfNosCreated = 0;
+    var d = new Date();
+    this.game.rnd.sow(d.getTime());
 
     do {
-      var xPow = this.game.rnd.integerInRange(200, 2048);
-      var yPow = this.game.rnd.integerInRange(200, 2048);
+      var xPow = this.game.rnd.integerInRange(100, this.game.world.width);
+      var yPow = this.game.rnd.integerInRange(100, this.game.world.height);
       var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
 
       if (isOnRoad) {
@@ -127,7 +131,32 @@ export default class extends Phaser.State {
         this.powerUps.push(pu);
         nbrOfNosCreated += 1;
       }
-    } while (nbrOfNosCreated < nbrOfNosToCreate);
+    } while (nbrOfNosCreated < this.nbrOfNosToCreate);
+
+    console.log('powerups created:'+this.powerUps.length);
+  }
+
+  renewRemovedPowerup(powType, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+
+    console.log('renew pow'+powType);
+    // How many of each Pow do we have?
+    var nbrOfNos = this.powerUps.filter(a => a.type === 'nos').length;
+
+    console.log('nbr of nos now:'+nbrOfNos+' should have:'+this.nbrOfNosToCreate);
+
+    if(nbrOfNos < this.nbrOfNosToCreate) {
+      console.log('adding nos');
+      do {
+        var xPow = this.game.rnd.integerInRange(200, this.game.world.width);
+        var yPow = this.game.rnd.integerInRange(200, this.game.world.height);
+        var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
+
+        if(isOnRoad) {
+          let pu = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+          this.powerUps.push(pu);
+        }
+      } while (!isOnRoad);
+    }
   }
 
   pedestrianHit() {
@@ -146,6 +175,7 @@ export default class extends Phaser.State {
 
   removePowerup(powType) {
     this.powerUps.splice(this.powerUps.indexOf(powType), 1);
+    console.log('pow removed, now have:'+this.powerUps.length);
   }
 
   createHud(carplayer) {
