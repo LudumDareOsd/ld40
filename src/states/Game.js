@@ -68,6 +68,12 @@ export default class extends Phaser.State {
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
     // this.map.editMap(1);
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
+
+    this.powerUpCollisionGroup = powerUpCollisionGroup;
+    this.opponentCollisionGroup = opponentCollisionGroup;
+    this.playerCollisionGroup = playerCollisionGroup;
+
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 10, 50, this.renewRemovedPowerup2, this);
   }
 
   hitPlayerOrOpponent(body1, body2) {
@@ -120,16 +126,39 @@ export default class extends Phaser.State {
     }*/
 
     this.totalNbrOfPowerUpsToCreate = this.nbrOfNosToCreate + this.nbrOfCarWashToCreate;
-    var nbrOfPowerUpsCreated = 0;
     /*var nbrOfNosCreated = 0;
     var nbrOfCarWashCreated = 0;*/
     var nbrOfNosCreated = this.powerUps.filter(a => a.type === 'nos').length;
     var nbrOfCarWashCreated = this.powerUps.filter(a => a.type === 'carwash').length;
+    var nbrOfPowerUpsCreated = nbrOfNosCreated + nbrOfCarWashCreated;
 
     //var d = new Date();
     //this.game.rnd.sow(d.getTime());
 
-    do {
+    console.log('tot pows to create:'+this.totalNbrOfPowerUpsToCreate+' got nos:'+nbrOfNosCreated+' carwash:'+nbrOfCarWashCreated);
+
+    /*do {
+      var xPow = this.game.rnd.integerInRange(100, this.game.world.width);
+      var yPow = this.game.rnd.integerInRange(100, this.game.world.height);
+      var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
+
+      if (isOnRoad) {
+        if(nbrOfNosCreated < this.nbrOfNosToCreate) {
+          let pu1 = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+          this.powerUps.push(pu1);
+          nbrOfNosCreated += 1;
+          console.log('created pow nos');
+        } else if(nbrOfCarWashCreated < this.nbrOfCarWashToCreate) {
+          let pu2 = new PowerUp(this.game, xPow, yPow, 'pw-carwash', 'carwash', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+          this.powerUps.push(pu2);
+          nbrOfCarWashCreated += 1;
+          console.log('created pow carwash');
+        }
+
+        nbrOfPowerUpsCreated = nbrOfNosCreated + nbrOfCarWashCreated;
+      }
+    } while (nbrOfPowerUpsCreated < this.totalNbrOfPowerUpsToCreate);*/
+    while (nbrOfPowerUpsCreated < this.totalNbrOfPowerUpsToCreate) {
       var xPow = this.game.rnd.integerInRange(100, this.game.world.width);
       var yPow = this.game.rnd.integerInRange(100, this.game.world.height);
       var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
@@ -149,7 +178,7 @@ export default class extends Phaser.State {
 
         nbrOfPowerUpsCreated = nbrOfNosCreated + nbrOfCarWashCreated;
       }
-    } while (nbrOfPowerUpsCreated < this.totalNbrOfPowerUpsToCreate);
+    }
 
     console.log('powerups created:' + this.powerUps.length);
   }
@@ -180,6 +209,12 @@ export default class extends Phaser.State {
           } while (!isOnRoad);
         }
         */
+  }
+
+  renewRemovedPowerup2() {
+    console.log('renew pow');
+
+    this.createPowerUps(this.powerUpCollisionGroup, this.opponentCollisionGroup, this.playerCollisionGroup);
   }
 
   pedestrianHit() {
