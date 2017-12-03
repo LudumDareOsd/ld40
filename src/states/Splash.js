@@ -19,12 +19,14 @@ export default class extends Phaser.State {
 
     this.load.image('playercar', 'assets/images/player-base.png');
     this.load.spritesheet('pedo', 'assets/images/Pedestrian1.png', 9, 23);
+    this.load.image('checkpoint', 'assets/images/checkpoint.png');
     this.load.image('splatter', 'assets/images/splatter.png');
     this.load.image('car', 'assets/images/enemy1.png');
     this.load.image('level1', 'assets/images/level1.png');
     this.load.image('level2', 'assets/images/level2.png');
     this.load.image('level3', 'assets/images/level3.png');
     this.load.image('pw-nos', 'assets/images/Speed-NOS.png');
+    this.load.image('pw-carwash', 'assets/images/Carwash.png');
     this.load.image('hud-speedometer', 'assets/images/Speedometer.png');
     this.load.image('hud-speedpin', 'assets/images/speed-pin.png');
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');

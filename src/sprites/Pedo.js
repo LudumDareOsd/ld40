@@ -47,7 +47,11 @@ export default class extends Phaser.Sprite {
 
     leaveSplatter() {
         let s = this.game.add.sprite(this.x, this.y, 'splatter');
-        s.scale.setTo(2);
+        if (this.mx > 0) {
+            s.scale.setTo(-2, 2);
+        } else {
+            s.scale.setTo(2, 2);
+        }
         s.sendToBack();
         this.map.currentLevel.sendToBack();
         this.kill();
