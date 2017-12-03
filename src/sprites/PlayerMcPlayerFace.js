@@ -14,6 +14,8 @@ export default class extends Phaser.Sprite {
         this.addedThrust = 0;
         this.offRoad = 0;
         this.boost = 0;
+        this.gore = 0;
+        this.goroMeter = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.playerHasPowType = '';
@@ -36,7 +38,7 @@ export default class extends Phaser.Sprite {
             else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                 this.body.rotateRight(50);
             }
-            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad);
+            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {

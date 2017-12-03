@@ -22,11 +22,13 @@ export default class extends Phaser.State {
     this.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.p2.setImpactEvents(true);
     this.physics.p2.restitution = 0.2;
-      
+
     this.map = new Map(this.game, this);
     this.path = new Path(this.game);
     this.powerUps = [];
-      
+    this.killCount = 0;
+    this.goreMeter = 0;
+
     // TODO Set actual starting pos for player
     this.player = new Player({
       game: this.game,
@@ -48,7 +50,7 @@ export default class extends Phaser.State {
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides(opponentCollisionGroup, this.hitEnemy, this);
     this.player.body.collides(powerUpCollisionGroup);
-    this.player.body.collides(pedoCollisionGroup);
+    this.player.body.collides(pedoCollisionGroup, this.pedestrianHit, this);
 
     this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup);
     for (var i = 0; i < 50; i++) {
@@ -120,7 +122,7 @@ export default class extends Phaser.State {
       var yPow = this.game.rnd.integerInRange(200, 2048);
       var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
 
-      if(isOnRoad) {
+      if (isOnRoad) {
         let pu = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
         this.powerUps.push(pu);
         nbrOfNosCreated += 1;
@@ -128,29 +130,56 @@ export default class extends Phaser.State {
     } while (nbrOfNosCreated < nbrOfNosToCreate);
   }
 
+  pedestrianHit() {
+    this.killCount++;
+    this.killCountText.text = this.killCount;
+
+    if(this.goreMeter < 5) {
+      this.goreMeter++;
+      this.player.gore = 20 * this.goreMeter;
+    }
+
+    let cropRect = new Phaser.Rectangle(0, 0, (24 * this.goreMeter), this.hudGoreometerBar.height);
+    this.hudGoreometerBar.crop(cropRect);
+  }
+
+
   removePowerup(powType) {
     this.powerUps.splice(this.powerUps.indexOf(powType), 1);
   }
 
   createHud(carplayer) {
     this.hud = this.game.add.group();
-      
+
     this.hudPowerup = new HudObject({
       game: this.game,
-      x: 960-(54*3),
+      x: 960 - (54 * 3),
       y: 0,
       asset: 'hud-powerup',
       scale: 3
     });
-      
-    this.hudGoreometer = new HudObject({
+
+    this.hudGoroMeter = new HudObject({
       game: this.game,
-      x: 960-(960-87*3),
-      y: 720-(21*3),
+      x: 960 - (960 - 87 * 3),
+      y: 720 - (21 * 3),
       asset: 'hud-goreometer',
       scale: 3
     });
-      
+
+    this.hudGoreometerBar = new HudObject({
+      game: this.game,
+      x: 960 - (867 - 87 * 3),
+      y: 748 - (21 * 3),
+      asset: 'hud-goreometer-bar',
+      scale: 3
+    });
+
+    this.hudGoreometerBar.anchor.setTo(0, 0);
+
+    let cropRect = new Phaser.Rectangle(0, 0, 0, this.hudGoreometerBar.height);
+    this.hudGoreometerBar.crop(cropRect);
+
     /* SPEEDOMETER low prio, not working right now
     this.hudSpeedometer = new HudObject({
       game: this.game,
@@ -171,24 +200,28 @@ export default class extends Phaser.State {
     hud.add(this.hudSpeedometer);
     hud.add(this.hudSpeedPin);
     */
-      
+
     this.hud.add(this.hudPowerup);
-    this.hud.add(this.hudGoreometer);
-      
+    this.hud.add(this.hudGoroMeter);
+    this.hud.add(this.hudGoreometerBar);
+
     this.game.add.existing(this.hud);
-      
+
     this.hud.fixedToCamera = true;
-      
+
     this.game.world.bringToTop(this.hud);
+
+    this.killCountText = this.game.add.text(10, 685, this.killCount, { font: "26px Arial", fill: "#ffffff", align: "center" });
+    this.killCountText.fixedToCamera = true;
   }
 
   showPowOnHud(powType) {
-    console.log('showing pow on hud:'+powType);
-    if(powType == 'nos') {
-      if(!this.hudPowNos) {
+    console.log('showing pow on hud:' + powType);
+    if (powType == 'nos') {
+      if (!this.hudPowNos) {
         this.hudPowNos = new HudObject({
           game: this.game,
-          x: 960-(92),
+          x: 960 - (92),
           y: 45,
           asset: 'pw-nos',
           scale: 3
