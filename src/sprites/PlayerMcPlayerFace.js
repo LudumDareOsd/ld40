@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import Util from '../util/util';
 
 export default class extends Phaser.Sprite {
-    constructor({ game, x, y, asset, stateObj, map}) {
+    constructor({ game, x, y, asset, stateObj, map }) {
         super(game, x, y, asset);
         this.anchor.setTo(0.5, 0.8);
         this.scale.setTo(2);
@@ -19,6 +19,7 @@ export default class extends Phaser.Sprite {
         this.engineSound = this.game.add.audio('engine');
         this.engineSound.loopFull(0.1);
         this.volume = 0.1;
+        this.maxVolume = 0.5;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.game.input.gamepad.start();
         this.pad1 = this.game.input.gamepad.pad1;
@@ -43,15 +44,15 @@ export default class extends Phaser.Sprite {
         var isLeft = this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A);
         var isRight = game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D);
 
-        if(!isGivingGas)
+        if (!isGivingGas)
             isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
-        
-        if(!isLeft)
+
+        if (!isLeft)
             isLeft = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
 
-        if(!isRight)
+        if (!isRight)
             isRight = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
-            
+
         var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
 
         if (isGivingGas) {
@@ -63,8 +64,11 @@ export default class extends Phaser.Sprite {
                 this.body.rotateRight(50);
             }
             this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
-            this.volume += 0.01;
-            this.engineSound.volume = this.volume;
+
+            if (this.volume < this.maxVolume) {
+                this.volume += 0.01;
+                this.engineSound.volume = this.volume;
+            }
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
@@ -75,9 +79,13 @@ export default class extends Phaser.Sprite {
                     this.body.rotateRight(10);
                 }
             }
+
+            if(this.volume > 0) {
+                this.volume -= 0.01;
+            }
         }
 
-        if(isPadPow) {
+        if (isPadPow) {
             this.activatePow();
         }
 
@@ -86,13 +94,13 @@ export default class extends Phaser.Sprite {
     }
 
     environmentCheck() {
-        if(!this.map.isPointOnRoad(this.x, this.y)) {
+        if (!this.map.isPointOnRoad(this.x, this.y)) {
             this.offRoad = 1000;
         } else {
             this.offRoad = 0;
         }
 
-        if(this.map.isPointOnBooster(this.x, this.y)) {
+        if (this.map.isPointOnBooster(this.x, this.y)) {
             this.boost = 1000;
         } else {
             this.boost = 0;
@@ -105,7 +113,7 @@ export default class extends Phaser.Sprite {
                 this.lap++;
                 this.currentCheckpoint = 0;
             } else {
-                 this.currentCheckpoint++;
+                this.currentCheckpoint++;
             }
             // WE HAVE FINISHED LAP 3
             if (this.lap == 4) {
@@ -116,13 +124,13 @@ export default class extends Phaser.Sprite {
 
     activatePow() {
 
-        if(this.isPowActivated == true || this.playerHasPowType == '') {
+        if (this.isPowActivated == true || this.playerHasPowType == '') {
             return;
         }
 
         console.log('activate pow');
 
-        if(this.playerHasPowType == 'nos') {
+        if (this.playerHasPowType == 'nos') {
             this.addThrust(this.powValue, this.powTimeSec);
             this.isPowActivated = true;
         }
@@ -131,7 +139,7 @@ export default class extends Phaser.Sprite {
     addPow(powType, powValue, powTimeSec) {
         console.log('added pow ' + powType);
 
-        if(this.playerHasPowType != powType) {
+        if (this.playerHasPowType != powType) {
             this.playerHasPowType = powType;
             this.powValue = powValue;
             this.powTimeSec = powTimeSec;
@@ -141,7 +149,7 @@ export default class extends Phaser.Sprite {
     addThrust(addThrust, removeThrustSec) {
         this.addedThrust = addThrust;
 
-        this.game.time.events.add(Phaser.Timer.SECOND * removeThrustSec, function() {
+        this.game.time.events.add(Phaser.Timer.SECOND * removeThrustSec, function () {
             this.removeThrust();
         }, this);
     }
