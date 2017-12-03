@@ -34,9 +34,13 @@ export default class extends Phaser.State {
     this.load.image('hud-goreometer-bar', 'assets/images/gore-bar.png');
     this.load.image('about-page', './assets/images/about-page.png');
     this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
-
+    
     this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
     this.game.load.audio('engine', './assets/sound/engine.wav');
+    this.load.audio('scream1', 'assets/sound/girly-scream.mp3');
+    this.load.audio('scream2', 'assets/sound/screaaam.mp3');
+    this.load.audio('scream3', 'assets/sound/Uaaah.mp3');
+    this.load.audio('scream4', 'assets/sound/whooa.mp3');
   }
 
   create() {
@@ -75,6 +79,8 @@ export default class extends Phaser.State {
   }
 
   onPlayClick() {
+    this.bgm.stop();
+    this.bgmStarted = false;
     this.state.start('Game')
   }
 

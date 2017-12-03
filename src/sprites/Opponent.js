@@ -31,16 +31,17 @@ export default class extends Phaser.Sprite {
     this.checkPath(pathPoint);
 
     if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
-      // console.log('OPPONENT CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
+      // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
+      console.log('OPPONENT CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
       if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
         this.lap++;
         this.currentCheckpoint = 0;
       } else {
         this.currentCheckpoint++;
       }
-      //  FINISHED LAP 3
+      // WE HAVE FINISHED LAP 3
       if (this.lap == 4) {
-        // console.log('OPPONENT ARE WINNAR');
+        console.log('OPPONENT ARE WINNAR');
       }
     }
   }
