@@ -46,15 +46,10 @@ export default class extends Phaser.Sprite {
     }
 
     leaveSplatter() {
-        // let newSplatter = Phaser.Sprite(this.game, this.x, this.y, 'splatter');
         let s = this.game.add.sprite(this.x, this.y, 'splatter');
-        // console.log(s);
-        // s.bringToTop();
         s.scale.setTo(2);
         s.sendToBack();
         this.map.currentLevel.sendToBack();
-        // s.moveDown();
-        // s.scale.x = 2; s.scale.y = 2;
         this.kill();
     }
 }

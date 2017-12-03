@@ -29,6 +29,7 @@ export default class extends Phaser.State {
     this.load.image('hud-speedpin', 'assets/images/speed-pin.png');
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');
     this.load.image('hud-goreometer', 'assets/images/Gore-O-Meter.png');
+    this.load.image('hud-goreometer-bar', 'assets/images/gore-bar.png');
     this.load.image('about-page', './assets/images/about-page.png');
     this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
   }

@@ -14,7 +14,11 @@ export default class extends Phaser.Sprite {
         this.addedThrust = 0;
         this.offRoad = 0;
         this.boost = 0;
+        this.gore = 0;
+        this.goroMeter = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.game.input.gamepad.start();
+        this.pad1 = this.game.input.gamepad.pad1;
 
         this.playerHasPowType = '';
         this.powValue = 0;
@@ -31,25 +35,45 @@ export default class extends Phaser.Sprite {
         this.body.setZeroRotation();
         this.environmentCheck();
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+        var isPadUsed = this.game.input.gamepad.supported && this.game.input.gamepad.active && this.pad1.connected;
+        var isGivingGas = this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W);
+        var isLeft = this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A);
+        var isRight = game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D);
 
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+        if(!isGivingGas)
+            isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
+        
+        if(!isLeft)
+            isLeft = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
+
+        if(!isRight)
+            isRight = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
+            
+        var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
+
+        if (isGivingGas) {
+
+            if (isLeft) {
                 this.body.rotateLeft(50);
             }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+            else if (isRight) {
                 this.body.rotateRight(50);
             }
-            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad);
+            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
-                if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+                if (isLeft) {
                     this.body.rotateLeft(10);
                 }
-                else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+                else if (isRight) {
                     this.body.rotateRight(10);
                 }
             }
+        }
+
+        if(isPadPow) {
+            this.activatePow();
         }
 
         this.powKey.onDown.add(this.activatePow, this);
