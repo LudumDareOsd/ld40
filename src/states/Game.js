@@ -64,11 +64,11 @@ export default class extends Phaser.State {
   }
 
   hitPlayerOrOpponent(body1, body2) {
-    body2.sprite.alpha -= 0.05;
+    //body2.sprite.alpha -= 0.05;
   }
 
   hitEnemy(body1, body2) {
-    body2.sprite.alpha -= 0.20;
+    //body2.sprite.alpha -= 0.20;
   }
 
   render() {
