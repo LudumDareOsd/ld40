@@ -10,7 +10,7 @@ export default class extends Phaser.Sprite {
         this.map = map;
 
         this.util = new Util();
-        this.maxThrust = 1000;
+        this.maxThrust = 1200;
         this.addedThrust = 0;
         this.offRoad = 0;
         this.boost = 0;
@@ -20,6 +20,9 @@ export default class extends Phaser.Sprite {
         this.powValue = 0;
         this.powTimeSec = 0;
         this.isPowActivated = false;
+
+        this.lap = 0;
+        this.currentCheckpoint = 0;
     }
 
     update() {
@@ -55,15 +58,30 @@ export default class extends Phaser.Sprite {
 
     environmentCheck() {
         if(!this.map.isPointOnRoad(this.x, this.y)) {
-            this.offRoad = 600;
+            this.offRoad = 1000;
         } else {
             this.offRoad = 0;
         }
 
         if(this.map.isPointOnBooster(this.x, this.y)) {
-            this.boost = 800;
+            this.boost = 1000;
         } else {
             this.boost = 0;
+        }
+
+        if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
+            // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
+            console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
+            if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
+                this.lap++;
+                this.currentCheckpoint = 0;
+            } else {
+                 this.currentCheckpoint++;
+            }
+            // WE HAVE FINISHED LAP 3
+            if (this.lap == 4) {
+                console.log('YOU ARE WINNAR');
+            }
         }
     }
 
