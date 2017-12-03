@@ -33,7 +33,8 @@ export default class extends Phaser.State {
       x: this.game.world.centerX,
       y: this.game.world.centerY,
       asset: 'playercar',
-      stateObj: this
+      stateObj: this,
+      map: this.map
     });
 
     var playerCollisionGroup = this.physics.p2.createCollisionGroup();
