@@ -86,6 +86,6 @@ export default class extends Phaser.State {
   }
 
   onAboutClick() {
-    this.state.start('GameOver');
+    this.state.start('About');
   }
 }
