@@ -17,7 +17,7 @@ export default class extends Phaser.Sprite {
         this.gore = 0;
         this.goroMeter = 0;
         this.engineSound = this.game.add.audio('engine');
-        this.engineSound.loopFull(1);
+        this.engineSound.loopFull(0.1);
         this.volume = 0.1;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.game.input.gamepad.start();
@@ -63,6 +63,8 @@ export default class extends Phaser.Sprite {
                 this.body.rotateRight(50);
             }
             this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore);
+            this.volume += 0.01;
+            this.engineSound.volume = this.volume;
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
