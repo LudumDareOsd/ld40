@@ -16,6 +16,7 @@ export default class extends Phaser.State {
     //
     // load your assets
     //
+
     this.load.image('playercar', 'assets/images/player-base.png');
     this.load.spritesheet('pedo', 'assets/images/Pedestrian1.png', 9, 23);
     this.load.image('car', 'assets/images/enemy1.png');
@@ -28,10 +29,18 @@ export default class extends Phaser.State {
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');
     this.load.image('hud-goreometer', 'assets/images/Gore-O-Meter.png');
     this.load.image('about-page', './assets/images/about-page.png');
+    this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
   }
 
   create () {
     this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
+
+    this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash')
+    this.splash.x = 0;
+    this.splash.y = 0;
+    this.splash.width = this.game.width;
+    this.splash.height = this.game.height;
+    this.splash.smoothed = false;
 
     this.playBtn = this.game.add.button(10 * 3, 188 * 3, 'playBtn', this.onPlayClick, this, 2, 1, 0);
     this.playBtn.width = 171;
