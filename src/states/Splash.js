@@ -2,9 +2,9 @@ import Phaser from 'phaser'
 import { centerGameObjects } from '../utils'
 
 export default class extends Phaser.State {
-  init () {}
+  init() { }
 
-  preload () {
+  preload() {
     this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash')
     this.splash.x = 0;
     this.splash.y = 0;
@@ -26,6 +26,7 @@ export default class extends Phaser.State {
     this.load.image('level2', 'assets/images/level2.png');
     this.load.image('level3', 'assets/images/level3.png');
     this.load.image('pw-nos', 'assets/images/Speed-NOS.png');
+    this.load.image('pw-carwash', 'assets/images/Carwash.png');
     this.load.image('hud-speedometer', 'assets/images/Speedometer.png');
     this.load.image('hud-speedpin', 'assets/images/speed-pin.png');
     this.load.image('hud-powerup', 'assets/images/Powerup-Display.png');
@@ -33,9 +34,12 @@ export default class extends Phaser.State {
     this.load.image('hud-goreometer-bar', 'assets/images/gore-bar.png');
     this.load.image('about-page', './assets/images/about-page.png');
     this.game.load.spritesheet('backBtn', './assets/images/back-btn.png', 63, 25);
+
+    this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
+    this.game.load.audio('engine', './assets/sound/engine.wav');
   }
 
-  create () {
+  create() {
     this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
 
     this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash')
@@ -54,8 +58,17 @@ export default class extends Phaser.State {
     this.aboutBtn.width = 204;
     this.aboutBtn.height = 99;
     this.aboutBtn.smoothed = false;
-    
+
+    this.bgm = this.game.add.audio('bgm');
+    this.game.sound.setDecodedCallback(this.bgm, this.playSound, this);
   }
+
+  playSound() {
+    if (!this.bgmStarted) {
+      this.bgmStarted = true;
+      this.bgm.loopFull(0.3);
+    }
+  } 
 
   hover() {
 

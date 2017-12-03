@@ -19,7 +19,7 @@ export default class extends Phaser.Sprite {
         this.game.add.existing(this);
         this.game.physics.p2.enable(this, false);
         this.body.setCollisionGroup(powerUpCollisionGroup);
-        this.body.collides(opponentCollisionGroup, this.removePowerUp, this);
+        this.body.collides(opponentCollisionGroup, this.opponentTakesPowerUp, this);
         this.body.collides(playerCollisionGroup, this.playerTakesPowerup, this);
     }
 
@@ -31,10 +31,16 @@ export default class extends Phaser.Sprite {
             this.stateUse.removePowerup(this.type); // remove from game/state
             this.stateUse.showPowOnHud(this.type);
             this.stateUse.renewRemovedPowerup(this.type, this.powerUpCollisionGroup, this.opponentCollisionGroup, this.playerCollisionGroup,); // add a new one
+        } else if (this.type == 'carwash') {
+            powSprite.sprite.kill();
+            this.thePlayer.addPow(this.type, 0, 0);
+            this.stateUse.removePowerup(this.type); // remove from game/state
+            this.stateUse.showPowOnHud(this.type);
+            this.stateUse.renewRemovedPowerup(this.type, this.powerUpCollisionGroup, this.opponentCollisionGroup, this.playerCollisionGroup,); // add a new one
         }
     }
 
-    removePowerUp(powSprite) {
+    opponentTakesPowerUp(powSprite) {
         powSprite.sprite.kill();
         this.stateUse.removePowerup(this.type); // remove from game/state
         this.game.time.events.add(Phaser.Timer.SECOND * 5, function() {
