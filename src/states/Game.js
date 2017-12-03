@@ -49,8 +49,6 @@ export default class extends Phaser.State {
     this.player.body.collides(powerUpCollisionGroup);
     this.player.body.collides(pedoCollisionGroup);
 
-
-    this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
     this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
     for (var i = 0; i < 300; i++) {
       var pedo = new Pedo(this.game, Math.floor(4096 * Math.random()), Math.floor(4096 * Math.random()), 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
@@ -62,14 +60,15 @@ export default class extends Phaser.State {
       
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
     // this.map.editMap(1);
+    this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
   }
 
   hitPlayerOrOpponent(body1, body2) {
-    body2.sprite.alpha -= 0.05;
+    //body2.sprite.alpha -= 0.05;
   }
 
   hitEnemy(body1, body2) {
-    body2.sprite.alpha -= 0.20;
+    //body2.sprite.alpha -= 0.20;
   }
 
   render() {
@@ -90,8 +89,8 @@ export default class extends Phaser.State {
         "Params": [{
             "PwoType": "nos",
             "Asset": "pw-nos",
-            "X": this.game.world.centerX-200,
-            "Y": this.game.world.centerY
+            "X": 2040,
+            "Y": 3308
           },{
             "PwoType": "nos",
             "Asset": "pw-nos",

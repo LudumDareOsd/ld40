@@ -9,7 +9,7 @@ export default class extends Phaser.Sprite {
         this.stateCaller = stateObj;
 
         this.util = new Util();
-        this.maxThrust = 800;
+        this.maxThrust = 1000;
         this.addedThrust = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
