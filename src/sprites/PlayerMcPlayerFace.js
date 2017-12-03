@@ -4,7 +4,7 @@ import Util from '../util/util';
 export default class extends Phaser.Sprite {
     constructor({ game, x, y, asset, stateObj, map}) {
         super(game, x, y, asset);
-        this.anchor.setTo(0.5, 0.8);
+        this.anchor.setTo(0.5, 0.5);
         this.scale.setTo(2);
         this.stateCaller = stateObj;
         this.map = map;
@@ -83,6 +83,39 @@ export default class extends Phaser.Sprite {
     environmentCheck() {
         if(!this.map.isPointOnRoad(this.x, this.y)) {
             this.offRoad = 1000;
+
+            if ((Math.abs(this.body.velocity.x) > 25 || Math.abs(this.body.velocity.y) > 25) && Math.random() > 0.5) {
+                
+                let v1 = { 
+                    x: (Math.cos((130 + this.body.angle) * Math.PI / 180)) * 35,
+                    y: (Math.sin((130 + this.body.angle) * Math.PI / 180)) * 35
+                };
+                let v2 = {
+                    x: (Math.cos((50 + this.body.angle) * Math.PI / 180)) * 35,
+                    y: (Math.sin((50 + this.body.angle) * Math.PI / 180)) * 35
+                };
+                // console.log(this.body);
+                // console.log(v);
+    
+                let m1 = this.game.add.sprite(this.centerX + v1.x, this.centerY + v1.y, 'smoke');
+                m1.smoothed = false; m1.scale.setTo(1); m1.anchor.setTo(0.5, 0.5);
+
+                let m2 = this.game.add.sprite(this.centerX + v2.x, this.centerY + v2.y, 'smoke');
+                m2.smoothed = false; m2.scale.setTo(1); m2.anchor.setTo(0.5, 0.5);
+
+                // this.game.physics.arcade.enable(m);
+                let tween1 = this.game.add.tween(m1).to({alpha:0}, 1000, Phaser.Easing.Linear.Out, false, 0);
+                tween1.onComplete.add(function (e) {
+                    m1.kill();
+                }, this);
+                let tween2 = this.game.add.tween(m2).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
+                tween2.onComplete.add(function (e) {
+                    m2.kill();
+                }, this);
+                
+                tween1.start();
+                tween2.start();
+            }
         } else {
             this.offRoad = 0;
         }
