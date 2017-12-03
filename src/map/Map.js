@@ -41,7 +41,7 @@ export default class {
 
     //
     editMap(levelNumber) {
-        this.loadMap(levelNumber, null, null);
+        this.loadMap(levelNumber, null, null, null);
 
         this.game.input.onDown.add(this.mouseDown, this);
         this.game.input.addMoveCallback(this.mouseMove, this);
@@ -74,7 +74,7 @@ export default class {
     }
 
     // 
-    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup) {
         // set correct background, bounds, camera etc;
         this.levelNumber = levelNumber;
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+this.levelNumber);
@@ -128,12 +128,12 @@ export default class {
         this.state.player.body.x = this.startPositions[0].x;
         this.state.player.body.y = this.startPositions[0].y;
 
-        if (powerUpCollisionGroup && opponentCollisionGroup) {
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[4].x, this.startPositions[4].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[5].x, this.startPositions[5].y);
+        if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y);
         }
 
         // Emil approved hardcode

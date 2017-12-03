@@ -50,15 +50,14 @@ export default class extends Phaser.State {
     this.player.body.collides(powerUpCollisionGroup);
     this.player.body.collides(pedoCollisionGroup);
 
-    this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
+    this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup);
     for (var i = 0; i < 50; i++) {
       var pedo = new Pedo(this.game, Math.floor(4096 * Math.random()), Math.floor(4096 * Math.random()), 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
       // var pedo = new Pedo(this.game, this.player.body.x, this.player.body.y, 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
     }
     this.game.add.existing(this.player);
     this.createHud(this.player);
-    
-      
+
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
     // this.map.editMap(1);
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
@@ -79,10 +78,10 @@ export default class extends Phaser.State {
     }
   }
 
-  createOpponents(path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup,  x, y) {
+  createOpponents(path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, x, y) {
     let opponent = new Opponent(game, x, y, 'car', path, powerUpCollisionGroup);
     opponent.body.setCollisionGroup(opponentCollisionGroup);
-    opponent.body.collides([opponentCollisionGroup, powerUpCollisionGroup, playerCollisionGroup]);
+    opponent.body.collides([opponentCollisionGroup, powerUpCollisionGroup, playerCollisionGroup, pedoCollisionGroup]);
   }
 
   createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
