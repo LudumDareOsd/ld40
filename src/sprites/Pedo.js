@@ -37,6 +37,10 @@ export default class extends Phaser.Sprite {
     }
 
     pedoVScar(pedo, car) {
+<<<<<<< HEAD
+        //console.log('COLLIDE');
+=======
+>>>>>>> c1edfe703da49a8173c2b364cb5adbf46f0d7471
         this.kill();
     }
 
