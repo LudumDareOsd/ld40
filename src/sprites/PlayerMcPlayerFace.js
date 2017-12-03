@@ -10,7 +10,7 @@ export default class extends Phaser.Sprite {
         this.map = map;
 
         this.util = new Util();
-        this.maxThrust = 1000;
+        this.maxThrust = 1200;
         this.addedThrust = 0;
         this.offRoad = 0;
         this.boost = 0;
@@ -55,13 +55,13 @@ export default class extends Phaser.Sprite {
 
     environmentCheck() {
         if(!this.map.isPointOnRoad(this.x, this.y)) {
-            this.offRoad = 600;
+            this.offRoad = 1000;
         } else {
             this.offRoad = 0;
         }
 
         if(this.map.isPointOnBooster(this.x, this.y)) {
-            this.boost = 800;
+            this.boost = 1000;
         } else {
             this.boost = 0;
         }
