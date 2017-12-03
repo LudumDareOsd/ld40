@@ -85,6 +85,7 @@ export default class extends Phaser.State {
   }
 
   createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+    /*
     var powsJson = {
         "Params": [{
             "PwoType": "nos",
@@ -109,10 +110,22 @@ export default class extends Phaser.State {
     for (var i = 0, len = powsJson.Params.length; i < len; i++) {
       let pu = new PowerUp(this.game, powsJson.Params[i].X, powsJson.Params[i].Y, powsJson.Params[i].Asset, powsJson.Params[i].PwoType, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
       this.powerUps.push(pu);
-    }
+    }*/
 
-    //let pu = new PowerUp(this.game, this.game.world.centerX-200, this.game.world.centerY, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
-    //this.powerUps.push(pu);
+    var nbrOfNosToCreate = this.game.rnd.integerInRange(3, 6);
+    var nbrOfNosCreated = 0;
+
+    do {
+      var xPow = this.game.rnd.integerInRange(200, 2048);
+      var yPow = this.game.rnd.integerInRange(200, 2048);
+      var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
+
+      if(isOnRoad) {
+        let pu = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
+        this.powerUps.push(pu);
+        nbrOfNosCreated += 1;
+      }
+    } while (nbrOfNosCreated < nbrOfNosToCreate);
   }
 
   removePowerup(powType) {
