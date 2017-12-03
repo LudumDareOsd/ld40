@@ -12,10 +12,11 @@ export default class {
         this.levelNumber = 1; // currently loaded level #
         this.levelScale = 2; // scale of maptexture
         this.startPositions = [
-            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0)
+            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0)
         ];
         this.startRects = [ // just for debugging
-            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20)
+            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20),
+            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20)
         ];
         this.selectedPosition = 0;
         this.POLYTYPE = {
@@ -131,6 +132,8 @@ export default class {
             this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
             this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
             this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[4].x, this.startPositions[4].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[5].x, this.startPositions[5].y);
         }
 
         // Emil approved hardcode

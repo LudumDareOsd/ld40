@@ -2,15 +2,18 @@ import Phaser from 'phaser';
 import Util from '../util/util';
 
 export default class extends Phaser.Sprite {
-    constructor({ game, x, y, asset, stateObj }) {
+    constructor({ game, x, y, asset, stateObj, map}) {
         super(game, x, y, asset);
         this.anchor.setTo(0.5, 0.8);
         this.scale.setTo(2);
         this.stateCaller = stateObj;
+        this.map = map;
 
         this.util = new Util();
         this.maxThrust = 1000;
         this.addedThrust = 0;
+        this.offRoad = 0;
+        this.boost = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.playerHasPowType = '';
@@ -23,6 +26,7 @@ export default class extends Phaser.Sprite {
 
         this.body.damping = 0.94;
         this.body.setZeroRotation();
+        this.environmentCheck();
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
 
@@ -32,7 +36,7 @@ export default class extends Phaser.Sprite {
             else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                 this.body.rotateRight(50);
             }
-            this.body.thrust(this.maxThrust + this.addedThrust);
+            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
@@ -47,6 +51,20 @@ export default class extends Phaser.Sprite {
 
         this.powKey.onDown.add(this.activatePow, this);
         //this.util.constrainVelocity(this, 15);
+    }
+
+    environmentCheck() {
+        if(!this.map.isPointOnRoad(this.x, this.y)) {
+            this.offRoad = 600;
+        } else {
+            this.offRoad = 0;
+        }
+
+        if(this.map.isPointOnBooster(this.x, this.y)) {
+            this.boost = 800;
+        } else {
+            this.boost = 0;
+        }
     }
 
     activatePow() {
