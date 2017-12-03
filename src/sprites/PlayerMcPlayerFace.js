@@ -137,16 +137,18 @@ export default class extends Phaser.Sprite {
             this.stateCaller.powCarWashUse();
             this.isPowActivated = false;
             this.stateCaller.hidePow();
+            this.playerHasPowType = '';
         }
     }
 
     addPow(powType, powValue, powTimeSec) {
-        console.log('added pow ' + powType);
+        console.log('adding pow try:' + powType);
 
-        if (this.playerHasPowType != powType) {
+        if(this.playerHasPowType == '') {
             this.playerHasPowType = powType;
             this.powValue = powValue;
             this.powTimeSec = powTimeSec;
+            console.log('added pow:' + powType);
         }
     }
 

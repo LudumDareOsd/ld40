@@ -38,6 +38,7 @@ export default class extends Phaser.Sprite {
             this.stateUse.showPowOnHud(this.type);
             this.stateUse.renewRemovedPowerup(this.type, this.powerUpCollisionGroup, this.opponentCollisionGroup, this.playerCollisionGroup,); // add a new one
         }
+        
     }
 
     opponentTakesPowerUp(powSprite) {
