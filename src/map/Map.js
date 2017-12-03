@@ -146,11 +146,11 @@ export default class {
         this.state.player.body.y = this.startPositions[0].y;
 
         if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y, this);
         }
 
         // Emil approved hardcode

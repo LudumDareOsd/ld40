@@ -2,18 +2,21 @@ import Phaser from 'phaser'
 import Util from '../util/util';
 
 export default class extends Phaser.Sprite {
-  constructor(game, x, y, asset, path, powerUpCollisionGroup) {
+  constructor(game, x, y, asset, path, powerUpCollisionGroup, map) {
     super(game, x, y, asset);
     this.scale.setTo(2);
     this.anchor.setTo(0.5);
     this.pathIndex = 0;
+    this.offRoad = 0;
+    this.boost = 0;
+    this.map = map;
     this.path = path;
     this.game = game;
     this.game.physics.p2.enable(this, false);
     this.game.add.existing(this);
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
     this.velocity = 0;
-    this.speed = this.game.rnd.integerInRange(800, 1200);
+    this.speed = this.game.rnd.integerInRange(1000, 1300);
     this.offset = this.game.rnd.integerInRange(50, 250);
     this.util = new Util();
 
@@ -24,7 +27,7 @@ export default class extends Phaser.Sprite {
   update() {
     let pathPoint = this.path.get(this.pathIndex);
     this.accelerateTo(pathPoint, this.speed);
-
+    this.environmentCheck();
     this.checkPath(pathPoint);
 
     // if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
@@ -47,7 +50,7 @@ export default class extends Phaser.Sprite {
 
     this.body.damping = 0.94;
     this.body.setZeroRotation();
-    this.body.thrust(speed);
+    this.body.thrust(speed + this.boost - this.offRoad);
 
     let deltaAngle = this.game.math.angleBetween(this.x, this.y, target.x + this.offset, target.y + this.offset);
     deltaAngle += 1.57;
@@ -57,11 +60,11 @@ export default class extends Phaser.Sprite {
   }
 
   onPowerUp(powerUp) {
-    if(powerUp.type) {
+    if (powerUp.type) {
 
     }
     console.log(powerUp);
-  }  
+  }
 
   checkPath(pathPoint) {
     let collision = this.AABB(this, pathPoint);
@@ -69,9 +72,9 @@ export default class extends Phaser.Sprite {
     if (collision) {
       this.pathIndex++;
 
-      if(this.pathIndex >= this.path.pathPoints.length) {
+      if (this.pathIndex >= this.path.pathPoints.length) {
         this.pathIndex = 0;
-      }   
+      }
     }
   }
 
@@ -84,5 +87,19 @@ export default class extends Phaser.Sprite {
     }
 
     return false;
+  }
+
+  environmentCheck() {
+    if (!this.map.isPointOnRoad(this.x, this.y)) {
+      this.offRoad = 200;
+    } else {
+      this.offRoad = 0;
+    }
+
+    if (this.map.isPointOnBooster(this.x, this.y)) {
+      this.boost = 1000;
+    } else {
+      this.boost = 0;
+    }
   }
 }
