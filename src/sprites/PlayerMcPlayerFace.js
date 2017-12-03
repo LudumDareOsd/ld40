@@ -15,6 +15,8 @@ export default class extends Phaser.Sprite {
         this.offRoad = 0;
         this.boost = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.game.input.gamepad.start();
+        this.pad1 = this.game.input.gamepad.pad1;
 
         this.playerHasPowType = '';
         this.powValue = 0;
@@ -36,10 +38,16 @@ export default class extends Phaser.Sprite {
         var isLeft = this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A);
         var isRight = game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D);
 
-        isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
-        isLeft = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
-        isRight = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
-        var isPadPow = isPadUsed && (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
+        if(!isGivingGas)
+            isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
+        
+        if(!isLeft)
+            isLeft = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
+
+        if(!isRight)
+            isRight = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
+            
+        var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
 
         if (isGivingGas) {
 
@@ -67,8 +75,6 @@ export default class extends Phaser.Sprite {
         }
 
         this.powKey.onDown.add(this.activatePow, this);
-        this.game.input.gamepad.start();
-        this.pad1 = this.game.input.gamepad.pad1;
         //this.util.constrainVelocity(this, 15);
     }
 
