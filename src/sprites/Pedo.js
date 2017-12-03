@@ -29,6 +29,11 @@ export default class extends Phaser.Sprite {
         this.util.clamp(-1, 1, this.my);
         this.body.x += this.mx;
         this.body.y += this.my;
+        if (this.mx > 0) {
+            this.scale.setTo(-2, 2);
+        } else {
+            this.scale.setTo(2, 2);
+        }
     }
 
     pedoVScar(pedo, car) {

@@ -51,7 +51,7 @@ export default class extends Phaser.State {
 
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
     this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup);
-    for (var i = 0; i < 300; i++) {
+    for (var i = 0; i < 50; i++) {
       var pedo = new Pedo(this.game, Math.floor(4096 * Math.random()), Math.floor(4096 * Math.random()), 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
       // var pedo = new Pedo(this.game, this.player.body.x, this.player.body.y, 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
     }
