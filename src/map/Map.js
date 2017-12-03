@@ -116,17 +116,14 @@ export default class {
             this.graphics.drawPolygon(poly._points);
             this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
-        if (json.checkpoints) {
-            
-            for (let i = 0; i < json.checkpoints.length; i++) {
-                let poly = json.checkpoints[i];
-                this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
-                    poly._points
-                ));
-                this.graphics.lineStyle(1, 0xfef111);
-                this.graphics.drawPolygon(poly._points);
-                this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
-            }
+        for (let i = 0; i < json.checkpoints.length; i++) {
+            let poly = json.checkpoints[i];
+            this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
+                poly._points
+            ));
+            this.graphics.lineStyle(1, 0xfef111);
+            this.graphics.drawPolygon(poly._points);
+            this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
 
         for (let i = 0; i < json.startPositions.length; i++) {
