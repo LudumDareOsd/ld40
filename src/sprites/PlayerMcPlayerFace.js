@@ -120,6 +120,10 @@ export default class extends Phaser.Sprite {
         if(this.playerHasPowType == 'nos') {
             this.addThrust(this.powValue, this.powTimeSec);
             this.isPowActivated = true;
+        } else if(this.playerHasPowType == 'carwash') {
+            this.stateCaller.powCarWashUse();
+            this.isPowActivated = false;
+            this.stateCaller.hidePow();
         }
     }
 
