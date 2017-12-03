@@ -101,12 +101,12 @@ export default class extends Phaser.Sprite {
             if ((Math.abs(this.body.velocity.x) > 25 || Math.abs(this.body.velocity.y) > 25) && Math.random() > 0.5) {
                 
                 let v1 = { 
-                    x: (Math.cos((130 + this.body.angle) * Math.PI / 180)) * 35,
-                    y: (Math.sin((130 + this.body.angle) * Math.PI / 180)) * 35
+                    x: (Math.cos((125 + this.body.angle) * Math.PI / 180)) * 40,
+                    y: (Math.sin((125 + this.body.angle) * Math.PI / 180)) * 40
                 };
                 let v2 = {
-                    x: (Math.cos((50 + this.body.angle) * Math.PI / 180)) * 35,
-                    y: (Math.sin((50 + this.body.angle) * Math.PI / 180)) * 35
+                    x: (Math.cos((55 + this.body.angle) * Math.PI / 180)) * 40,
+                    y: (Math.sin((55 + this.body.angle) * Math.PI / 180)) * 40
                 };
                 // console.log(this.body);
                 // console.log(v);
