@@ -16,7 +16,7 @@ export default class extends Phaser.Sprite {
     this.game.add.existing(this);
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
     this.velocity = 0;
-    this.speed = this.game.rnd.integerInRange(800, 1200);
+    this.speed = this.game.rnd.integerInRange(1000, 1300);
     this.offset = this.game.rnd.integerInRange(50, 250);
     this.util = new Util();
   }
@@ -73,7 +73,7 @@ export default class extends Phaser.Sprite {
 
   environmentCheck() {
     if (!this.map.isPointOnRoad(this.x, this.y)) {
-      this.offRoad = 1000;
+      this.offRoad = 200;
     } else {
       this.offRoad = 0;
     }
