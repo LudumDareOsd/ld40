@@ -12,17 +12,20 @@ export default class {
         this.levelNumber = 1; // currently loaded level #
         this.levelScale = 2; // scale of maptexture
         this.startPositions = [
-            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0)
+            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0),
+            new Phaser.Point(0, 0), new Phaser.Point(0, 0), new Phaser.Point(0, 0)
         ];
         this.startRects = [ // just for debugging
-            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20)
+            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20),
+            new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20), new Phaser.Rectangle(0, 0, 20, 20)
         ];
         this.selectedPosition = 0;
         this.POLYTYPE = {
             road: 0,
             boost: 1,
             collision: 2,
-            count: 3
+            checkpoints: 3,
+            count: 4
         }
         this.selectedLayer = this.POLYTYPE.road;
 
@@ -40,7 +43,7 @@ export default class {
 
     //
     editMap(levelNumber) {
-        this.loadMap(levelNumber, null, null);
+        this.loadMap(levelNumber, null, null, null);
 
         this.game.input.onDown.add(this.mouseDown, this);
         this.game.input.addMoveCallback(this.mouseMove, this);
@@ -51,6 +54,7 @@ export default class {
         this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function() { this.selectedLayer = this.POLYTYPE.road; }, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function () { this.selectedLayer = this.POLYTYPE.boost; }, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function () { this.selectedLayer = this.POLYTYPE.collision; }, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR).onDown.add(function () { this.selectedLayer = this.POLYTYPE.checkpoints; }, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(function () {
             this.startPositions[this.selectedPosition].x = this.game.input.x + this.game.camera.x;
             this.startPositions[this.selectedPosition].y = this.game.input.y + this.game.camera.y;
@@ -73,7 +77,7 @@ export default class {
     }
 
     // 
-    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
+    loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup) {
         // set correct background, bounds, camera etc;
         this.levelNumber = levelNumber;
         this.currentLevel = game.add.tileSprite(0, 0, 2048, 2048, 'level'+this.levelNumber);
@@ -112,9 +116,23 @@ export default class {
             this.graphics.drawPolygon(poly._points);
             this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         }
+        if (json.checkpoints) {
+            
+            for (let i = 0; i < json.checkpoints.length; i++) {
+                let poly = json.checkpoints[i];
+                this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
+                    poly._points
+                ));
+                this.graphics.lineStyle(1, 0xfef111);
+                this.graphics.drawPolygon(poly._points);
+                this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            }
+        }
 
         for (let i = 0; i < json.startPositions.length; i++) {
             this.startPositions[i] = json.startPositions[i];
+            this.startRects[i].x = this.startPositions[i].x - 10;
+            this.startRects[i].y = this.startPositions[i].y - 10;
         }
 
         this.path.pathPoints = [];
@@ -127,10 +145,12 @@ export default class {
         this.state.player.body.x = this.startPositions[0].x;
         this.state.player.body.y = this.startPositions[0].y;
 
-        if (powerUpCollisionGroup && opponentCollisionGroup) {
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[1].x, this.startPositions[1].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[2].x, this.startPositions[2].y);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.startPositions[3].x, this.startPositions[3].y);
+        if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y, this);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y, this);
         }
 
         // Emil approved hardcode
@@ -283,6 +303,16 @@ export default class {
         return false;
     }
 
+    // returns true if point is inside a checkpooint
+    isPointOnCheckpoint(x, y, key) {
+        if (key < this.polygons[this.POLYTYPE.checkpoints].length) {
+            let poly = this.polygons[this.POLYTYPE.checkpoints][key];
+            if (poly.contains(x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // export current level to json
     exportLevel() {
@@ -298,6 +328,7 @@ export default class {
             road: this.polygons[this.POLYTYPE.road],
             boost: this.polygons[this.POLYTYPE.boost],
             collision: this.polygons[this.POLYTYPE.collision],
+            checkpoints: this.polygons[this.POLYTYPE.checkpoints],
             path: pp,
             startPositions: this.startPositions
             // add start position etc

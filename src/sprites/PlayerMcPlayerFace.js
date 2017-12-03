@@ -2,27 +2,34 @@ import Phaser from 'phaser';
 import Util from '../util/util';
 
 export default class extends Phaser.Sprite {
-    constructor({ game, x, y, asset, stateObj }) {
+    constructor({ game, x, y, asset, stateObj, map}) {
         super(game, x, y, asset);
         this.anchor.setTo(0.5, 0.8);
         this.scale.setTo(2);
         this.stateCaller = stateObj;
+        this.map = map;
 
         this.util = new Util();
-        this.maxThrust = 1000;
+        this.maxThrust = 1200;
         this.addedThrust = 0;
+        this.offRoad = 0;
+        this.boost = 0;
         this.powKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.playerHasPowType = '';
         this.powValue = 0;
         this.powTimeSec = 0;
         this.isPowActivated = false;
+
+        this.lap = 0;
+        this.currentCheckpoint = 0;
     }
 
     update() {
 
         this.body.damping = 0.94;
         this.body.setZeroRotation();
+        this.environmentCheck();
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
 
@@ -32,7 +39,7 @@ export default class extends Phaser.Sprite {
             else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                 this.body.rotateRight(50);
             }
-            this.body.thrust(this.maxThrust + this.addedThrust);
+            this.body.thrust(this.maxThrust + this.addedThrust + this.boost - this.offRoad);
 
         } else {
             if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
@@ -47,6 +54,35 @@ export default class extends Phaser.Sprite {
 
         this.powKey.onDown.add(this.activatePow, this);
         //this.util.constrainVelocity(this, 15);
+    }
+
+    environmentCheck() {
+        if(!this.map.isPointOnRoad(this.x, this.y)) {
+            this.offRoad = 1000;
+        } else {
+            this.offRoad = 0;
+        }
+
+        if(this.map.isPointOnBooster(this.x, this.y)) {
+            this.boost = 1000;
+        } else {
+            this.boost = 0;
+        }
+
+        if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
+            // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
+            console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
+            if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
+                this.lap++;
+                this.currentCheckpoint = 0;
+            } else {
+                 this.currentCheckpoint++;
+            }
+            // WE HAVE FINISHED LAP 3
+            if (this.lap == 4) {
+                console.log('YOU ARE WINNAR');
+            }
+        }
     }
 
     activatePow() {
