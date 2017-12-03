@@ -3,9 +3,10 @@ import Util from '../util/util';
 // 9 x 23
 
 export default class extends Phaser.Sprite {
-    constructor(game, x, y, asset, playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup) {
+    constructor(game, x, y, asset, playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup, map) {
         super(game, x, y, asset);
         this.game = game;
+        this.map = map;
         this.util = new Util();
         this.scale.setTo(2);
 
@@ -14,7 +15,7 @@ export default class extends Phaser.Sprite {
         // var pedoCollisionGroup;
         this.body.setCollisionGroup(pedoCollisionGroup);
         this.body.collides(opponentCollisionGroup, this.pedoVScar, this);
-        this.body.collides(playerCollisionGroup, this.pedoVScar, this);
+        this.body.collides(playerCollisionGroup, this.pedoVScarPlayer, this);
         this.walk = this.animations.add('walk');
         this.animations.play('walk', 3, true);
 
@@ -37,7 +38,23 @@ export default class extends Phaser.Sprite {
     }
 
     pedoVScar(pedo, car) {
-        this.kill();
+        this.leaveSplatter();
+    }
+    pedoVScarPlayer(pedo, car) {
+        this.game.camera.shake(0.005, 400);
+        this.leaveSplatter();
     }
 
+    leaveSplatter() {
+        // let newSplatter = Phaser.Sprite(this.game, this.x, this.y, 'splatter');
+        let s = this.game.add.sprite(this.x, this.y, 'splatter');
+        // console.log(s);
+        // s.bringToTop();
+        s.scale.setTo(2);
+        s.sendToBack();
+        this.map.currentLevel.sendToBack();
+        // s.moveDown();
+        // s.scale.x = 2; s.scale.y = 2;
+        this.kill();
+    }
 }
