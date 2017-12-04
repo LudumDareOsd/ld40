@@ -70,6 +70,8 @@ export default class extends Phaser.State {
     this.aboutBtn.height = 99;
     this.aboutBtn.smoothed = false;
 
+    this.game.highScore = 0;
+
     if (!this.bgmStarted) {
       this.bgm = this.game.add.audio('bgm');
       this.game.sound.setDecodedCallback(this.bgm, this.playSound, this);

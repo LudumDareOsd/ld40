@@ -18,6 +18,16 @@ export default class extends Phaser.State {
     this.backBtn.height = 75;
     this.backBtn.smoothed = false;
 
+    let x = 415;
+    if(this.game.highScore < 10) {
+      x = 435
+    };
+
+    this.score = this.game.add.text(x, 150, this.game.highScore, { font: "64px Courier New", fill: "#c31919", align: "center" });
+    this.score.fontWeight = 900;
+    this.score.fixedToCamera = true;
+    this.game.world.bringToTop(this.score);
+
     if (this.loadLevel <= config.maxLevel) {
         this.playBtn = this.game.add.button(242 * 3, 192 * 3, 'playBtn', this.onPlayClick, this, 2, 1, 0);
         this.playBtn.width = 171;

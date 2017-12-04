@@ -153,6 +153,7 @@ export default class extends Phaser.Sprite {
             if (this.lap == config.totalLaps) {
                 // YOU ARE WINNAR
                 this.engineSound.stop();
+                this.game.highScore += this.game.killCount;
                 this.game.state.start('YouWin', true, false, this.map.levelNumber+1);
             }
         }

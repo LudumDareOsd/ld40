@@ -13,8 +13,8 @@ import Path from '../map/Path';
 export default class extends Phaser.State {
 
   init(levelNumber) {
-    this.nbrOfNosToCreate = 5;
-    this.nbrOfCarWashToCreate = 3;
+    this.nbrOfNosToCreate = this.game.rnd.integerInRange(3, 5);
+    this.nbrOfCarWashToCreate = this.game.rnd.integerInRange(2, 4);
     this.loadLevel = levelNumber || 1;
   }
   preload() { }
@@ -31,7 +31,7 @@ export default class extends Phaser.State {
     this.map = new Map(this.game, this);
     this.path = new Path(this.game);
     this.powerUps = [];
-    this.killCount = 0;
+    this.game.killCount = 0;
     this.goreMeter = 0;
 
     // TODO Set actual starting pos for player
@@ -127,8 +127,8 @@ export default class extends Phaser.State {
     this.totalNbrOfPowerUpsToCreate = this.nbrOfNosToCreate + this.nbrOfCarWashToCreate;
     /*var nbrOfNosCreated = 0;
     var nbrOfCarWashCreated = 0;*/
-    var nbrOfNosCreated = this.powerUps.filter(a => a === 'nos').length;
-    var nbrOfCarWashCreated = this.powerUps.filter(a => a === 'carwash').length;
+    var nbrOfNosCreated = this.powerUps.filter(a => a.type === 'nos').length;
+    var nbrOfCarWashCreated = this.powerUps.filter(a => a.type === 'carwash').length;
     var nbrOfPowerUpsCreated = nbrOfNosCreated + nbrOfCarWashCreated;
 
     //var d = new Date();
@@ -165,12 +165,12 @@ export default class extends Phaser.State {
       if (isOnRoad) {
         if (nbrOfNosCreated < this.nbrOfNosToCreate) {
           let pu1 = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
-          this.powerUps.push('nos');
+          this.powerUps.push(pu1);
           nbrOfNosCreated += 1;
           console.log('created pow nos');
         } else if (nbrOfCarWashCreated < this.nbrOfCarWashToCreate) {
           let pu2 = new PowerUp(this.game, xPow, yPow, 'pw-carwash', 'carwash', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
-          this.powerUps.push('carwash');
+          this.powerUps.push(pu2);
           nbrOfCarWashCreated += 1;
           console.log('created pow carwash');
         }
@@ -179,7 +179,6 @@ export default class extends Phaser.State {
       }
     }
 
-    this.game.world.bringToTop(this.hud);
     console.log('powerups created:' + this.powerUps.length);
   }
 
@@ -218,8 +217,8 @@ export default class extends Phaser.State {
   }
 
   pedestrianHit() {
-    this.killCount++;
-    this.killCountText.text = this.killCount;
+    this.game.killCount++;
+    this.killCountText.text = this.game.killCount;
 
     if (this.goreMeter < 5) {
       this.goreMeter++;
@@ -336,13 +335,17 @@ export default class extends Phaser.State {
 
     this.game.world.bringToTop(this.hud);
 
-    this.killCountText = this.game.add.text(60, 100, this.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
+    this.killCountText = this.game.add.text(60, 100, this.game.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
     this.killCountText.fontWeight = 900;
     this.killCountText.fixedToCamera = true;
 
     this.game.lapCountText = this.game.add.text(60, 33, this.player.lap + "/3", { font: "26px Courier New", fill: "#c31919", align: "center" });
     this.game.lapCountText.fontWeight = 900;
     this.game.lapCountText.fixedToCamera = true;
+
+    this.game.world.bringToTop(this.hud);
+    this.game.world.bringToTop(this.killCountText);
+    this.game.world.bringToTop(this.game.lapCountText);
 
   }
 

@@ -48,7 +48,7 @@ export default class extends Phaser.Sprite {
       if (this.lap == config.totalLaps) {
         // OPPONENT WINS
         this.map.state.player.engineSound.stop(); // ....... don't ask
-        this.game.state.start('GameOver');
+        this.game.state.start('GameOver', true, false, this.map.levelNumber);
       }
     }
   }
