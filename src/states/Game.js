@@ -388,6 +388,7 @@ export default class extends Phaser.State {
     this.scream2 = this.game.add.audio('scream2');
     this.scream3 = this.game.add.audio('scream3');
     this.scream4 = this.game.add.audio('scream4');
+    this.beep = this.game.add.audio('beep');
     this.game.splash = this.game.add.audio('splash');
     this.game.nos = this.game.add.audio('nos');
     this.game.nos.volume = 0.3;
@@ -408,7 +409,8 @@ export default class extends Phaser.State {
     let tween = this.game.add.tween(sprite.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 1000);
     
     tween.onComplete.add(function (e) {
-      let tweenStart = this.game.add.tween(sprite).to({ alpha: 0 }, 500, Phaser.Easing.Linear.Out, false);
+      this.beep.play();
+      let tweenStart = this.game.add.tween(sprite).to({ alpha: 0 }, 500, Phaser.Easing.Linear.Out, false, 900);
       tweenStart.onComplete.add(function (e) {
         sprite.kill();
         this.game.started = true;
