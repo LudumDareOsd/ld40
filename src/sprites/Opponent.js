@@ -28,6 +28,11 @@ export default class extends Phaser.Sprite {
   }
 
   update() {
+
+    if (!this.game.started) {
+      return;
+    }
+
     let pathPoint = this.path.get(this.pathIndex);
     this.accelerateTo(pathPoint, this.speed);
     this.environmentCheck();

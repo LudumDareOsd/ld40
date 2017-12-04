@@ -13,8 +13,8 @@ import Path from '../map/Path';
 export default class extends Phaser.State {
 
   init(levelNumber) {
-    this.nbrOfNosToCreate = this.game.rnd.integerInRange(3, 5);
-    this.nbrOfCarWashToCreate = this.game.rnd.integerInRange(2, 4);
+    this.nbrOfNosToCreate = 5;
+    this.nbrOfCarWashToCreate = 3;
     this.loadLevel = levelNumber || 1;
   }
   preload() { }
@@ -23,6 +23,8 @@ export default class extends Phaser.State {
     this.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.p2.setImpactEvents(true);
     this.physics.p2.restitution = 0.2;
+
+    this.game.started = false;
 
     this.loadAudio();
 
@@ -70,6 +72,8 @@ export default class extends Phaser.State {
     this.playerCollisionGroup = playerCollisionGroup;
 
     this.game.time.events.repeat(Phaser.Timer.SECOND * 10, 50, this.renewRemovedPowerup2, this);
+
+    this.startCountDown();
   }
 
   hitPlayerOrOpponent(body1, body2) {
@@ -130,7 +134,7 @@ export default class extends Phaser.State {
     //var d = new Date();
     //this.game.rnd.sow(d.getTime());
 
-    console.log('tot pows to create:'+this.totalNbrOfPowerUpsToCreate+' got nos:'+nbrOfNosCreated+' carwash:'+nbrOfCarWashCreated);
+    console.log('tot pows to create:' + this.totalNbrOfPowerUpsToCreate + ' got nos:' + nbrOfNosCreated + ' carwash:' + nbrOfCarWashCreated);
 
     /*do {
       var xPow = this.game.rnd.integerInRange(100, this.game.world.width);
@@ -239,6 +243,7 @@ export default class extends Phaser.State {
   }
 
   powCarWashUse() {
+    
     this.goreMeter = 0;
     let cropRect = new Phaser.Rectangle(0, 0, (24 * this.goreMeter), this.hudGoreometerBar.height);
     this.hudGoreometerBar.crop(cropRect);
@@ -334,9 +339,9 @@ export default class extends Phaser.State {
     this.killCountText.fontWeight = 900;
     this.killCountText.fixedToCamera = true;
 
-    this.lapCountText = this.game.add.text(60, 33, this.player.lap + "/5", { font: "26px Courier New", fill: "#c31919", align: "center" });
-    this.lapCountText.fontWeight = 900;
-    this.lapCountText.fixedToCamera = true;
+    this.game.lapCountText = this.game.add.text(60, 33, this.player.lap + "/3", { font: "26px Courier New", fill: "#c31919", align: "center" });
+    this.game.lapCountText.fontWeight = 900;
+    this.game.lapCountText.fixedToCamera = true;
 
   }
 
@@ -380,5 +385,29 @@ export default class extends Phaser.State {
     this.scream2 = this.game.add.audio('scream2');
     this.scream3 = this.game.add.audio('scream3');
     this.scream4 = this.game.add.audio('scream4');
+    this.game.splash = this.game.add.audio('splash');
+    this.game.nos = this.game.add.audio('nos');
+    this.game.nos.volume = 0.3;
+    this.game.pick = this.game.add.audio('pick');
+    this.game.pick.volume = 0.3;
+  }
+
+  startCountDown() {
+    let sprite = this.game.add.sprite(480, 120, 'checkpoint');
+    this.showText(sprite);
+  }
+
+  showText(sprite) {
+    sprite.anchor.x = 0.5; sprite.anchor.y = 0.5; sprite.smoothed = false;
+    sprite.fixedToCamera = true;
+
+
+
+    let tween = this.game.add.tween(sprite.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 1000);
+    tween.onComplete.add(function (e) {
+      sprite.kill();
+      this.game.started = true;
+    }, this);
+    tween.start();
   }
 }

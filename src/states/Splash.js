@@ -45,6 +45,9 @@ export default class extends Phaser.State {
     this.load.audio('scream2', 'assets/sound/screaaam.mp3');
     this.load.audio('scream3', 'assets/sound/Uaaah.mp3');
     this.load.audio('scream4', 'assets/sound/whooa.mp3');
+    this.load.audio('splash', 'assets/sound/waterspell.wav');
+    this.load.audio('nos', 'assets/sound/nos.wav');
+    this.load.audio('pick', 'assets/sound/pickup.wav');
   }
 
   create() {

@@ -38,6 +38,10 @@ export default class extends Phaser.Sprite {
     }
 
     update() {
+        
+        if(!this.game.started) {
+            return;
+        }
 
         this.body.damping = 0.94;
         this.body.setZeroRotation();
@@ -141,6 +145,7 @@ export default class extends Phaser.Sprite {
             this.map.checkpoint(this);
             if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
                 this.lap++;
+                this.game.lapCountText.text = this.lap + "/3";
                 this.currentCheckpoint = 0;
             } else {
                 this.currentCheckpoint++;
@@ -159,9 +164,11 @@ export default class extends Phaser.Sprite {
         }
 
         if (this.playerHasPowType == 'nos') {
+            this.game.nos.play();
             this.addThrust(this.powValue, this.powTimeSec);
             this.isPowActivated = true;
         } else if(this.playerHasPowType == 'carwash') {
+            this.game.splash.play();
             this.frame = 0;
             this.stateCaller.powCarWashUse();
             this.isPowActivated = false;
@@ -171,6 +178,7 @@ export default class extends Phaser.Sprite {
     }
 
     addPow(powType, powValue, powTimeSec) {
+        this.game.pick.play();
         if(this.playerHasPowType == '') {
             this.playerHasPowType = powType;
             this.powValue = powValue;
