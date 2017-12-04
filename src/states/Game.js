@@ -405,12 +405,15 @@ export default class extends Phaser.State {
     sprite.anchor.x = 0.5; sprite.anchor.y = 0.9; sprite.smoothed = false;
     sprite.fixedToCamera = true;
 
-
-
     let tween = this.game.add.tween(sprite.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 1000);
+    
     tween.onComplete.add(function (e) {
-      sprite.kill();
-      this.game.started = true;
+      let tweenStart = this.game.add.tween(sprite.scale).to({ x: 3, y: 3}, 1000, Phaser.Easing.Linear.Out, false);
+      tweenStart.onComplete.add(function (e) {
+        sprite.kill();
+        this.game.started = true;
+      }, this);
+      tweenStart.start();
     }, this);
     tween.start();
   }
