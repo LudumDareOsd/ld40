@@ -329,36 +329,23 @@ export default class extends Phaser.State {
     this.hud.add(this.hudGoreometerBar);
     this.hud.add(this.hudSpeedometer);
 
-<<<<<<< HEAD
-    this.game.add.existing(this.hud);
-
-    this.hud.fixedToCamera = true;
-
-    this.game.world.bringToTop(this.hud);
-
     this.killCountText = this.game.add.text(60, 100, this.game.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
-=======
-    this.killCountText = this.game.add.text(60, 100, this.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
->>>>>>> 7d868f2c2924a603936d3a24d1807a35d64dc575
     this.killCountText.fontWeight = 900;
     this.hud.add(this.killCountText);
 
     this.game.lapCountText = this.game.add.text(60, 33, this.player.lap + "/3", { font: "26px Courier New", fill: "#c31919", align: "center" });
     this.game.lapCountText.fontWeight = 900;
-<<<<<<< HEAD
-    this.game.lapCountText.fixedToCamera = true;
+    this.hud.add(this.game.lapCountText);
 
     this.game.world.bringToTop(this.hud);
     this.game.world.bringToTop(this.killCountText);
     this.game.world.bringToTop(this.game.lapCountText);
 
-=======
-    this.hud.add(this.game.lapCountText);
-    
-    this.game.add.existing(this.hud);
     this.hud.fixedToCamera = true;
+        
+    this.game.add.existing(this.hud);
     this.game.world.bringToTop(this.hud);
->>>>>>> 7d868f2c2924a603936d3a24d1807a35d64dc575
+
   }
 
   showPowOnHud(powType) {
@@ -409,20 +396,24 @@ export default class extends Phaser.State {
   }
 
   startCountDown() {
-    let sprite = this.game.add.sprite(480, 120, 'checkpoint');
+    let sprite = this.game.add.sprite(480, 400, 'startYourEngines');
+    this.game.world.bringToTop(sprite);
     this.showText(sprite);
   }
 
   showText(sprite) {
-    sprite.anchor.x = 0.5; sprite.anchor.y = 0.5; sprite.smoothed = false;
+    sprite.anchor.x = 0.5; sprite.anchor.y = 0.9; sprite.smoothed = false;
     sprite.fixedToCamera = true;
 
-
-
     let tween = this.game.add.tween(sprite.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 1000);
+    
     tween.onComplete.add(function (e) {
-      sprite.kill();
-      this.game.started = true;
+      let tweenStart = this.game.add.tween(sprite.scale).to({ x: 3, y: 3}, 1000, Phaser.Easing.Linear.Out, false);
+      tweenStart.onComplete.add(function (e) {
+        sprite.kill();
+        this.game.started = true;
+      }, this);
+      tweenStart.start();
     }, this);
     tween.start();
   }
