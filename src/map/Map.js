@@ -9,6 +9,7 @@ export default class {
             x: 0, y: 0
         }
         this.path = new Path(game);
+        this.currentLevel = null; // Holds current level sprite
         this.levelNumber = 1; // currently loaded level #
         this.levelScale = 2; // scale of maptexture
         this.startPositions = [
@@ -78,10 +79,9 @@ export default class {
         this.game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
         this.currentLevel.scale.setTo(this.levelScale);
         this.currentLevel.smoothed = false;
-        
+
         // load map from file
         let json = require('../../assets/levels/level'+this.levelNumber+'.json');
-        console.log(this.game);
 
         this.graphics = this.game.add.graphics(0, 0);
         for (let i = 0; i < json.road.length; i++) {
@@ -310,18 +310,13 @@ export default class {
     checkpoint(self) {
         // 480(half screeen)
         let s = this.game.add.sprite(480, 120, 'checkpoint');
-        s.anchor.x = 0.5; s.anchor.y = 0.5;
+        s.anchor.x = 0.5; s.anchor.y = 0.5; s.smoothed = false;
         s.fixedToCamera = true;
-        s.smoothed = false;
-        let tween = this.game.add.tween(s.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 0); 
-        tween.onComplete.add(function(e) { 
+        let tween = this.game.add.tween(s.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 0);
+        tween.onComplete.add(function(e) {
             s.kill();
         }, this);
         tween.start();
-
-        // s.sendT();
-        // this.map.currentLevel.sendToBack();
-        // this.game.
     }
 
     // export current level to json

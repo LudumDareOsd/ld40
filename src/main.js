@@ -7,6 +7,7 @@ import SplashState from './states/Splash';
 import GameState from './states/Game';
 import AboutState from './states/About';
 import GameOver from './states/GameOver';
+import YouWin from './states/YouWin';
 
 import config from './config'
 
@@ -23,6 +24,7 @@ class Game extends Phaser.Game {
     this.state.add('Game', GameState, false);
     this.state.add('About', AboutState, false);
     this.state.add('GameOver', GameOver, false);
+    this.state.add('YouWin', YouWin, false);
 
     // with Cordova with need to wait that the device is ready so we will call the Boot state in another file
     if (!window.cordova) {
@@ -49,7 +51,7 @@ if (window.cordova) {
       this.receivedEvent('deviceready')
 
       // When the device is ready, start Phaser Boot state.
-      window.game.state.start('Boot')
+      window.game.state.start('Boot');
     },
 
     receivedEvent: function (id) {

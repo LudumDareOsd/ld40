@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import Util from '../util/util';
+import config from '../config';
 
 export default class extends Phaser.Sprite {
     constructor({ game, x, y, asset, stateObj, map }) {
         super(game, x, y, asset);
+        this.smoothed = false;
         this.anchor.setTo(0.5, 0.5);
         this.scale.setTo(2);
         this.stateCaller = stateObj;
@@ -31,8 +33,6 @@ export default class extends Phaser.Sprite {
 
         this.lap = 1;
         this.currentCheckpoint = 0;
-
-        this.smoothed = false;
     }
 
     update() {
@@ -57,33 +57,20 @@ export default class extends Phaser.Sprite {
 
         var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
 
-        let length = Math.sqrt((this.body.velocity.x * this.body.velocity.x) + (this.body.velocity.y * this.body.velocity.y));
-        this.volume = (0.2 + (length * 0.001));
+        this.speed = Math.sqrt((this.body.velocity.x * this.body.velocity.x) + (this.body.velocity.y * this.body.velocity.y));
+        this.volume = (0.2 + (this.speed * 0.001));
         this.engineSound.volume = this.volume;
 
+        if (isLeft) {
+          this.body.rotateLeft(Math.min(50, this.speed * 0.15));
+        }
+        else if (isRight) {
+          this.body.rotateRight(Math.min(50, this.speed * 0.15));
+        }
+
         if (isGivingGas) {
-
-            if (isLeft) {
-                this.body.rotateLeft(50);
-            }
-            else if (isRight) {
-                this.body.rotateRight(50);
-            }
-
-            let totalThrust = this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore; 
+            let totalThrust = this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore;
             this.body.thrust(totalThrust);
-
-            
-
-        } else {
-            if (Math.abs(this.body.velocity.x) > 100 || Math.abs(this.body.velocity.y) > 100) {
-                if (isLeft) {
-                    this.body.rotateLeft(10);
-                }
-                else if (isRight) {
-                    this.body.rotateRight(10);
-                }
-            }
         }
 
         if (isPadPow) {
@@ -98,19 +85,16 @@ export default class extends Phaser.Sprite {
         if (!this.map.isPointOnRoad(this.x, this.y)) {
             this.offRoad = 1000;
 
-            if ((Math.abs(this.body.velocity.x) > 25 || Math.abs(this.body.velocity.y) > 25) && Math.random() > 0.5) {
-                
-                let v1 = { 
-                    x: (Math.cos((125 + this.body.angle) * Math.PI / 180)) * 40,
-                    y: (Math.sin((125 + this.body.angle) * Math.PI / 180)) * 40
+            if (this.speed > 50 && Math.random() > 0.6) { // add animated smokesprites at back tires
+                let v1 = {
+                    x: (Math.cos((125 + this.body.angle) * Math.PI / 180)) * 45,
+                    y: (Math.sin((125 + this.body.angle) * Math.PI / 180)) * 45
                 };
                 let v2 = {
-                    x: (Math.cos((55 + this.body.angle) * Math.PI / 180)) * 40,
-                    y: (Math.sin((55 + this.body.angle) * Math.PI / 180)) * 40
+                    x: (Math.cos((55 + this.body.angle) * Math.PI / 180)) * 45,
+                    y: (Math.sin((55 + this.body.angle) * Math.PI / 180)) * 45
                 };
-                // console.log(this.body);
-                // console.log(v);
-    
+
                 let m1 = this.game.add.sprite(this.centerX + v1.x, this.centerY + v1.y, 'smoke');
                 m1.smoothed = false; m1.scale.setTo(1); m1.anchor.setTo(0.5, 0.5);
 
@@ -119,14 +103,16 @@ export default class extends Phaser.Sprite {
 
                 // this.game.physics.arcade.enable(m);
                 let tween1 = this.game.add.tween(m1).to({alpha:0}, 1000, Phaser.Easing.Linear.Out, false, 0);
+                this.game.add.tween(m1.scale).to({ x:4, y:4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
                 tween1.onComplete.add(function (e) {
                     m1.kill();
                 }, this);
-                let tween2 = this.game.add.tween(m2).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
+                let tween2 = this.game.add.tween(m2).to({ alpha:0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
+                this.game.add.tween(m2.scale).to({ x: 4, y: 4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
                 tween2.onComplete.add(function (e) {
                     m2.kill();
                 }, this);
-                
+
                 tween1.start();
                 tween2.start();
             }
@@ -141,30 +127,25 @@ export default class extends Phaser.Sprite {
         }
 
         if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
-            // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
             this.map.checkpoint(this);
-            // console.log('CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
             if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
                 this.lap++;
                 this.currentCheckpoint = 0;
             } else {
                 this.currentCheckpoint++;
             }
-            // WE HAVE FINISHED LAP 5
-            if (this.lap == 6) {
-                
-                // console.log('YOU ARE WINNAR');
+            if (this.lap == config.totalLaps) {
+                // YOU ARE WINNAR
+                this.engineSound.stop();
+                this.game.state.start('YouWin');
             }
         }
     }
 
     activatePow() {
-
         if (this.isPowActivated == true || this.playerHasPowType == '') {
             return;
         }
-
-        console.log('activate pow');
 
         if (this.playerHasPowType == 'nos') {
             this.addThrust(this.powValue, this.powTimeSec);
@@ -178,19 +159,15 @@ export default class extends Phaser.Sprite {
     }
 
     addPow(powType, powValue, powTimeSec) {
-        console.log('adding pow try:' + powType);
-
         if(this.playerHasPowType == '') {
             this.playerHasPowType = powType;
             this.powValue = powValue;
             this.powTimeSec = powTimeSec;
-            console.log('added pow:' + powType);
         }
     }
 
     addThrust(addThrust, removeThrustSec) {
         this.addedThrust = addThrust;
-
         this.game.time.events.add(Phaser.Timer.SECOND * removeThrustSec, function () {
             this.removeThrust();
         }, this);

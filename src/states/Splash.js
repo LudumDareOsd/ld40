@@ -11,6 +11,7 @@ export default class extends Phaser.State {
     this.splash.width = this.game.width;
     this.splash.height = this.game.height;
     this.splash.smoothed = false;
+    // this.bgmStarted = false;
 
     this.load.setPreloadSprite(this.splash)
     //
@@ -34,9 +35,9 @@ export default class extends Phaser.State {
     this.load.image('hud-goreometer', 'assets/images/Gore-O-Meter.png');
     this.load.image('hud-goreometer-bar', 'assets/images/gore-bar.png');
     this.load.image('about-page', './assets/images/about-page.png');
-    this.load.image('about-page', './assets/images/about-page.png');
-    this.load.spritesheet('game-over', './assets/images/game-over.png', 63, 25);
-    
+    this.load.image('game-over', './assets/images/game-over.png');
+    this.load.image('you-win', './assets/images/Congratulations.png');
+
     this.game.load.audio('bgm', './assets/sound/Doom-Race.mp3');
     this.game.load.audio('engine', './assets/sound/engine.wav');
     this.load.audio('scream1', 'assets/sound/girly-scream.mp3');
@@ -65,8 +66,10 @@ export default class extends Phaser.State {
     this.aboutBtn.height = 99;
     this.aboutBtn.smoothed = false;
 
-    this.bgm = this.game.add.audio('bgm');
-    this.game.sound.setDecodedCallback(this.bgm, this.playSound, this);
+    if (!this.bgmStarted) {
+      this.bgm = this.game.add.audio('bgm');
+      this.game.sound.setDecodedCallback(this.bgm, this.playSound, this);
+    }
   }
 
   playSound() {
@@ -74,13 +77,14 @@ export default class extends Phaser.State {
       this.bgmStarted = true;
       this.bgm.loopFull(0.3);
     }
-  } 
+  }
 
   hover() {
 
   }
 
   onPlayClick() {
+    console.log('BGM STOP');
     this.bgm.stop();
     this.bgmStarted = false;
     this.state.start('Game')

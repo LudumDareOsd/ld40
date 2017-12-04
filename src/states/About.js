@@ -1,15 +1,14 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
+import config from '../config'
 
 export default class extends Phaser.State {
 
     init() { }
     preload() {
-        this.aboutPage = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'about-page')
-        this.aboutPage.x = 0;
-        this.aboutPage.y = 0;
-        this.aboutPage.width = this.game.width;
-        this.aboutPage.height = this.game.height;
+        this.aboutPage = this.add.sprite(0, 0, 'about-page')
+        this.aboutPage.width = config.gameWidth;
+        this.aboutPage.height = config.gameHeight;
         this.aboutPage.smoothed = false;
 
         this.backBtn = this.game.add.button(5 * 3, 210 * 3, 'backBtn', this.onBackClick, this, 2, 1, 0);

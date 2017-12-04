@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Util from '../util/util';
+import config from '../config';
 
 export default class extends Phaser.Sprite {
   constructor(game, x, y, asset, path, powerUpCollisionGroup, map) {
@@ -20,7 +21,7 @@ export default class extends Phaser.Sprite {
     this.offset = this.game.rnd.integerInRange(50, 250);
     this.util = new Util();
 
-    this.lap = 0;
+    this.lap = 1;
     this.currentCheckpoint = 0;
     this.smoothed = false;
   }
@@ -32,23 +33,21 @@ export default class extends Phaser.Sprite {
     this.checkPath(pathPoint);
 
     if (this.map.isPointOnCheckpoint(this.x, this.y, this.currentCheckpoint)) {
-      // WE HAVE HIT NEXT CHECKPOINT, todo: SOME FLASHY SHIT??
-      console.log('OPPONENT CHECKPOINT HIT: ' + this.currentCheckpoint + ' MAX:' + this.map.polygons[this.map.POLYTYPE.checkpoints].length + ' LAP:' + this.lap);
       if ((this.currentCheckpoint >= this.map.polygons[this.map.POLYTYPE.checkpoints].length - 1)) {
         this.lap++;
         this.currentCheckpoint = 0;
       } else {
         this.currentCheckpoint++;
       }
-      // WE HAVE FINISHED LAP 3
-      if (this.lap == 4) {
-        console.log('OPPONENT ARE WINNAR');
+      if (this.lap == config.totalLaps) {
+        // OPPONENT WINS
+        this.map.state.player.engineSound.stop(); // ....... don't ask
+        this.game.state.start('GameOver');
       }
     }
   }
 
   accelerateTo(target, speed) {
-
     this.body.damping = 0.94;
     this.body.setZeroRotation();
     this.body.thrust(speed + this.boost - this.offRoad);
@@ -64,7 +63,6 @@ export default class extends Phaser.Sprite {
     if (powerUp.type) {
 
     }
-    console.log(powerUp);
   }
 
   checkPath(pathPoint) {
