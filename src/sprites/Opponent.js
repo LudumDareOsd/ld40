@@ -3,7 +3,7 @@ import Util from '../util/util';
 import config from '../config';
 
 export default class extends Phaser.Sprite {
-  constructor(game, x, y, asset, path, powerUpCollisionGroup, map) {
+  constructor(game, x, y, asset, path, powerUpCollisionGroup, map, angle) {
     super(game, x, y, asset);
     this.scale.setTo(2);
     this.anchor.setTo(0.5);
@@ -16,6 +16,7 @@ export default class extends Phaser.Sprite {
     this.game.physics.p2.enable(this, false);
     this.game.add.existing(this);
     this.body.collides(powerUpCollisionGroup, this.onPowerUp, this.game);
+    this.body.angle = angle;
     this.velocity = 0;
     this.speed = this.game.rnd.integerInRange(1100, 1400);
     this.offset = this.game.rnd.integerInRange(50, 250);

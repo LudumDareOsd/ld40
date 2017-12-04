@@ -88,7 +88,7 @@ export default class extends Phaser.State {
     console.log('BGM STOP');
     this.bgm.stop();
     this.bgmStarted = false;
-      this.state.start('Game', true, false, config.startLevel);
+    this.state.start('Game', true, false, config.startLevel);
     // this.game.state.start('Mapeditor');
   }
 

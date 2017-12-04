@@ -59,36 +59,24 @@ export default class {
             this.polygons[this.POLYTYPE.road].push(new Phaser.Polygon(
                 poly._points
             ));
-            // this.graphics.lineStyle(1, 0x11eeee);
-            // this.graphics.drawPolygon(poly._points);
-            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         } }
         if(json.boost) { for (let i = 0; i < json.boost.length; i++) {
             let poly = json.boost[i];
             this.polygons[this.POLYTYPE.boost].push(new Phaser.Polygon(
                 poly._points
             ));
-            // this.graphics.lineStyle(1, 0xee11ee);
-            // this.graphics.drawPolygon(poly._points);
-            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         } }
         if(json.collision) { for (let i = 0; i < json.collision.length; i++) {
             let poly = json.collision[i];
             this.polygons[this.POLYTYPE.collision].push(new Phaser.Polygon(
                 poly._points
             ));
-            // this.graphics.lineStyle(1, 0xee11ee);
-            // this.graphics.drawPolygon(poly._points);
-            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         } }
         if(json.checkpoints) { for (let i = 0; i < json.checkpoints.length; i++) {
             let poly = json.checkpoints[i];
             this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
                 poly._points
             ));
-            // this.graphics.lineStyle(1, 0xfef111);
-            // this.graphics.drawPolygon(poly._points);
-            // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
         } }
 
         if(json.startPositions) { for (let i = 0; i < json.startPositions.length; i++) {
@@ -109,18 +97,23 @@ export default class {
             this.path.add(p.x, p.y, false);
         } }
 
-        if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y, this);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y, this);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y, this);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y, this);
-            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y, this);
-        }
-
         // Emil approved hardcode
-        if (levelNumber == 1) {
-            this.state.player.body.angle = 270;
+        let ang = 270;
+        if (levelNumber == 2) {
+            ang = 0;
         }
+        if (levelNumber == 3) {
+            ang = 180;
+        }
+        if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y, this, ang);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[2].x, this.startPositions[2].y, this, ang);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[3].x, this.startPositions[3].y, this, ang);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[4].x, this.startPositions[4].y, this, ang);
+            this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[5].x, this.startPositions[5].y, this, ang);
+        }
+        this.state.player.body.angle = ang;
+
     }
 
 
@@ -144,21 +137,16 @@ export default class {
             game.debug.geom(rect);
         }
 
-        // // debug polygons
-        // for (let i = 0; i < this.roadPolygons.length; i++) {
-        //     let poly = this.roadPolygons[i];
-        //     let col = 'rgba(255,255,255,1)';
-        //     if (poly.contains(tmp.x, tmp.y)) {
-        //         col = 'rgba(255,0,0,1)';
-        //     }
-
-        //     // for (let j = 0; j < poly.points.length; j++) {
-        //     //     game.debug.geom(poly.points[j], col);
-        //     //     if (i < poly.points.length) {
-        //     //         // game.debug.geom(this.debugLines[i], 'rgba(111,111,255,1)');
-        //     //     }
-        //     // }
-        // }
+        this.graphics.clear();
+        for (let i = 0; i < this.POLYTYPE.count; i++) {
+            var c = Math.floor(16777215 / i).toString(16);
+            for (let j = 0; j < this.polygons[i].length; j++) {
+                let poly = this.polygons[i][j];
+                this.graphics.lineStyle(1, c);
+                this.graphics.drawPolygon(poly._points);
+                this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
+            }
+        }
 
         // draw points
         for (let i = 0; i < this.verticies.length; i++) {

@@ -86,8 +86,8 @@ export default class extends Phaser.State {
     }
   }
 
-  createOpponents(path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, x, y, map) {
-    let opponent = new Opponent(game, x, y, 'car', path, powerUpCollisionGroup, map);
+  createOpponents(path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, x, y, map, angle) {
+    let opponent = new Opponent(game, x, y, 'car', path, powerUpCollisionGroup, map, angle);
     opponent.body.setCollisionGroup(opponentCollisionGroup);
     opponent.body.collides([opponentCollisionGroup, powerUpCollisionGroup, playerCollisionGroup, pedoCollisionGroup]);
   }

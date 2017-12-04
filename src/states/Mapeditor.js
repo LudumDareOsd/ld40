@@ -35,7 +35,7 @@ export default class extends Phaser.State {
         // game.input.keyboard.addKey(Phaser.Keyboard.V).onDown.add(function () { this.map.path.pathPoints.splice(-1, 1); console.log(this.map.path.pathPoints.length); }, this.map);
         game.input.keyboard.addKey(Phaser.Keyboard.E).onDown.add(this.map.exportLevel, this.map);
 
-        this.map.loadMap(2);
+        this.map.loadMap(3);
 
         game.camera.follow(null);
     }
