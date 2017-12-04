@@ -12,6 +12,13 @@ export default class extends Phaser.Sprite {
 
         this.game.add.existing(this);
         this.game.physics.p2.enable(this, false);
+        this.body.collideWorldBounds = true;
+        this.body.allowGravity = false;
+        this.body.mass = 0.01;
+        this.body.restitution = 0;
+        this.body.damping = 1;
+        this.body.fixedRotation = true;
+
         // var pedoCollisionGroup;
         this.body.setCollisionGroup(pedoCollisionGroup);
         this.body.collides(opponentCollisionGroup, this.pedoVScar, this);
@@ -23,6 +30,7 @@ export default class extends Phaser.Sprite {
         this.my = 0;
 
         this.smoothed = false;
+        this.reset();
     }
 
     update() {
@@ -32,6 +40,11 @@ export default class extends Phaser.Sprite {
         this.util.clamp(-1, 1, this.my);
         this.body.x += this.mx;
         this.body.y += this.my;
+        // pedos bugout at the edges? just reset them?
+        if (this.body.x < 20 || this.body.x > 4066 ||
+            this.body.y < 20 || this.body.y > 4066) {
+            this.reset();
+        }
         if (this.mx > 0) {
             this.scale.setTo(-2, 2);
         } else {
@@ -43,6 +56,7 @@ export default class extends Phaser.Sprite {
         this.leaveSplatter();
     }
     pedoVScarPlayer(pedo, car) {
+        car.sprite.increaseGore();
         this.game.camera.shake(0.005, 400);
         this.leaveSplatter();
     }
@@ -56,6 +70,18 @@ export default class extends Phaser.Sprite {
         }
         s.sendToBack();
         this.map.currentLevel.sendToBack();
-        this.kill();
+        // Kill or @respawn?
+        // this.kill();
+        this.reset();
+    }
+
+    reset() {
+      this.body.x = 100 + Math.floor(3900 * Math.random());
+      this.body.y = 100 + Math.floor(3900 * Math.random());
+      this.body.velocity.x = 0;
+      this.body.velocity.y = 0;
+      this.mx = 0;
+      this.my = 0;
+      this.body.angle = 0;
     }
 }

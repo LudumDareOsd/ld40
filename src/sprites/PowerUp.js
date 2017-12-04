@@ -18,6 +18,8 @@ export default class extends Phaser.Sprite {
 
         this.game.add.existing(this);
         this.game.physics.p2.enable(this, false);
+        this.body.mass = 0.01;
+        this.body.restitution = 0;
         this.body.setCollisionGroup(powerUpCollisionGroup);
         this.body.collides(opponentCollisionGroup, this.opponentTakesPowerUp, this);
         this.body.collides(playerCollisionGroup, this.playerTakesPowerup, this);

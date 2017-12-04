@@ -10,6 +10,8 @@ export default class extends Phaser.Sprite {
         this.scale.setTo(2);
         this.stateCaller = stateObj;
         this.map = map;
+        this.maxFrames = 5;
+        this.frame = 0;
 
         this.util = new Util();
         this.maxThrust = 1200;
@@ -62,10 +64,10 @@ export default class extends Phaser.Sprite {
         this.engineSound.volume = this.volume;
 
         if (isLeft) {
-          this.body.rotateLeft(Math.min(50, this.speed * 0.15));
+          this.body.rotateLeft(Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
         }
         else if (isRight) {
-          this.body.rotateRight(Math.min(50, this.speed * 0.15));
+          this.body.rotateRight(Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
         }
 
         if (isGivingGas) {
@@ -85,14 +87,14 @@ export default class extends Phaser.Sprite {
         if (!this.map.isPointOnRoad(this.x, this.y)) {
             this.offRoad = 1000;
 
-            if (this.speed > 50 && Math.random() > 0.6) { // add animated smokesprites at back tires
+            if (this.speed > 40 && Math.random() > 0.6) { // add animated smokesprites at back tires
                 let v1 = {
-                    x: (Math.cos((125 + this.body.angle) * Math.PI / 180)) * 45,
-                    y: (Math.sin((125 + this.body.angle) * Math.PI / 180)) * 45
+                    x: (Math.cos((125 + this.body.angle) * Math.PI / 180)) * 43,
+                    y: (Math.sin((125 + this.body.angle) * Math.PI / 180)) * 43
                 };
                 let v2 = {
-                    x: (Math.cos((55 + this.body.angle) * Math.PI / 180)) * 45,
-                    y: (Math.sin((55 + this.body.angle) * Math.PI / 180)) * 45
+                    x: (Math.cos((55 + this.body.angle) * Math.PI / 180)) * 43,
+                    y: (Math.sin((55 + this.body.angle) * Math.PI / 180)) * 43
                 };
 
                 let m1 = this.game.add.sprite(this.centerX + v1.x, this.centerY + v1.y, 'smoke');
@@ -151,6 +153,7 @@ export default class extends Phaser.Sprite {
             this.addThrust(this.powValue, this.powTimeSec);
             this.isPowActivated = true;
         } else if(this.playerHasPowType == 'carwash') {
+            this.frame = 0;
             this.stateCaller.powCarWashUse();
             this.isPowActivated = false;
             this.stateCaller.hidePow();
@@ -178,6 +181,12 @@ export default class extends Phaser.Sprite {
         this.playerHasPowType = '';
         this.isPowActivated = false;
         this.stateCaller.hidePow();
+    }
+
+    increaseGore() {
+      if (this.frame < this.maxFrames) {
+        this.frame++;
+      }
     }
 
     // http://www.html5gamedevs.com/topic/9835-is-there-a-proper-way-to-limit-the-speed-of-a-p2-body/

@@ -18,7 +18,7 @@ export default class extends Phaser.State {
     // load your assets
     //
 
-    this.load.image('playercar', 'assets/images/player-base.png');
+    this.load.spritesheet('player-all', 'assets/images/player-all.png', 23, 36);
     this.load.spritesheet('pedo', 'assets/images/Pedestrian1.png', 9, 23);
     this.load.image('checkpoint', 'assets/images/checkpoint.png');
     this.load.image('splatter', 'assets/images/splatter.png');

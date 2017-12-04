@@ -39,7 +39,7 @@ export default class extends Phaser.State {
       game: this.game,
       x: this.game.world.centerX,
       y: this.game.world.centerY,
-      asset: 'playercar',
+      asset: 'player-all',
       stateObj: this,
       map: this.map
     });
