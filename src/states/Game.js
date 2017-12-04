@@ -408,7 +408,7 @@ export default class extends Phaser.State {
     let tween = this.game.add.tween(sprite.scale).to({ x: 3, y: 3 }, 1000, Phaser.Easing.Bounce.Out, false, 1000);
     
     tween.onComplete.add(function (e) {
-      let tweenStart = this.game.add.tween(sprite.scale).to({ x: 3, y: 3}, 1000, Phaser.Easing.Linear.Out, false);
+      let tweenStart = this.game.add.tween(sprite).to({ alpha: 0 }, 500, Phaser.Easing.Linear.Out, false);
       tweenStart.onComplete.add(function (e) {
         sprite.kill();
         this.game.started = true;
