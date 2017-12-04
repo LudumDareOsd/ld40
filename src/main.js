@@ -8,6 +8,7 @@ import GameState from './states/Game';
 import AboutState from './states/About';
 import GameOver from './states/GameOver';
 import YouWin from './states/YouWin';
+import Mapeditor from './states/Mapeditor';
 
 import config from './config'
 
@@ -25,6 +26,7 @@ class Game extends Phaser.Game {
     this.state.add('About', AboutState, false);
     this.state.add('GameOver', GameOver, false);
     this.state.add('YouWin', YouWin, false);
+    this.state.add('Mapeditor', Mapeditor, false);
 
     // with Cordova with need to wait that the device is ready so we will call the Boot state in another file
     if (!window.cordova) {

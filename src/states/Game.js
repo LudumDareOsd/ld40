@@ -12,16 +12,14 @@ import Path from '../map/Path';
 
 export default class extends Phaser.State {
 
-  init() {
+  init(levelNumber) {
     this.nbrOfNosToCreate = this.game.rnd.integerInRange(3, 5);
     this.nbrOfCarWashToCreate = this.game.rnd.integerInRange(2, 4);
+    this.loadLevel = levelNumber || 1;
   }
   preload() { }
 
   create() {
-    //this.game.add.tileSprite(0, 0, 2048, 2048, 'level1');
-    //this.game.world.setBounds(0, 0, 2048, 2048);
-    //this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.startSystem(Phaser.Physics.P2JS);
     this.physics.p2.setImpactEvents(true);
     this.physics.p2.restitution = 0.2;
@@ -57,16 +55,14 @@ export default class extends Phaser.State {
     this.player.body.collides(powerUpCollisionGroup);
     this.player.body.collides(pedoCollisionGroup, this.pedestrianHit, this);
 
-    this.map.loadMap(1, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup);
+    this.map.loadMap(this.loadLevel, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup);
     for (var i = 0; i < 50; i++) {
       var pedo = new Pedo(this.game, Math.floor(4096 * Math.random()), Math.floor(4096 * Math.random()), 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup, this.map);
-      // var pedo = new Pedo(this.game, this.player.body.x, this.player.body.y, 'pedo', playerCollisionGroup, opponentCollisionGroup, pedoCollisionGroup);
     }
     this.game.add.existing(this.player);
     this.createHud(this.player);
 
     this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); //Phaser.Camera.FOLLOW_TOPDOWN_TIGHT FOLLOW_LOCKON //, 300, 300
-    // this.map.editMap(1);
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
 
     this.powerUpCollisionGroup = powerUpCollisionGroup;
@@ -191,16 +187,16 @@ export default class extends Phaser.State {
         var nbrOfNos = this.powerUps.filter(a => a.type === 'nos').length;
         var nbrOfCarwash = this.powerUps.filter(a => a.type === 'carwash').length;
         var nbrOfTotalPow = nbrOfNos + nbrOfCarwash;
-    
-        console.log('nbr of pow now nos:'+nbrOfNos+' should have:'+this.nbrOfNosToCreate + ' carwash:'+ nbrOfCarwash + ' should have:'+this.nbrOfCarWashToCreate);   
-    
+
+        console.log('nbr of pow now nos:'+nbrOfNos+' should have:'+this.nbrOfNosToCreate + ' carwash:'+ nbrOfCarwash + ' should have:'+this.nbrOfCarWashToCreate);
+
         if(nbrOfNos < this.nbrOfNosToCreate) {
           console.log('adding nos');
           do {
             var xPow = this.game.rnd.integerInRange(200, this.game.world.width);
             var yPow = this.game.rnd.integerInRange(200, this.game.world.height);
             var isOnRoad = this.map.isPointOnRoad(xPow, yPow);
-    
+
             if(isOnRoad) {
               let pu = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
               this.powerUps.push(pu);
@@ -309,16 +305,16 @@ export default class extends Phaser.State {
       y: 0,
       asset: 'hud-speedometer'
     });
-      
+
     this.hudSpeedPin = new HudSpeedPin({
       game: this.game,
       x: 52,
       y: 50,
       asset: 'hud-speedpin'
     });
-      
+
     //this.hudSpeedometer.fixedToCamera = true;
-      
+
     hud.add(this.hudSpeedometer);
     hud.add(this.hudSpeedPin);
     */
@@ -326,7 +322,7 @@ export default class extends Phaser.State {
     this.hud.add(this.hudPowerup);
     this.hud.add(this.hudGoroMeter);
     this.hud.add(this.hudGoreometerBar);
-    this.hud.add(this.hudSpeedometer); 
+    this.hud.add(this.hudSpeedometer);
 
     this.game.add.existing(this.hud);
 

@@ -43,35 +43,6 @@ export default class {
     }
 
     //
-    editMap(levelNumber) {
-        this.loadMap(levelNumber, null, null, null);
-
-        this.game.input.onDown.add(this.mouseDown, this);
-        this.game.input.addMoveCallback(this.mouseMove, this);
-        this.game.input.onUp.add(this.mouseUp, this);
-
-        this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.addPolygon, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.Z).onDown.add(this.undoPolygon, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(function() { this.selectedLayer = this.POLYTYPE.road; }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(function () { this.selectedLayer = this.POLYTYPE.boost; }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.THREE).onDown.add(function () { this.selectedLayer = this.POLYTYPE.collision; }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR).onDown.add(function () { this.selectedLayer = this.POLYTYPE.checkpoints; }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(function () {
-            this.startPositions[this.selectedPosition].x = this.game.input.x + this.game.camera.x;
-            this.startPositions[this.selectedPosition].y = this.game.input.y + this.game.camera.y;
-            this.startRects[this.selectedPosition].x = this.startPositions[this.selectedPosition].x - 10;
-            this.startRects[this.selectedPosition].y = this.startPositions[this.selectedPosition].y - 10;
-            this.selectedPosition = (this.selectedPosition >= this.startPositions.length - 1) ? 0 : this.selectedPosition + 1;
-        }, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.X).onDown.add(function () { this.path.add(this.game.input.x + this.game.camera.x - 150, this.game.input.y + this.game.camera.y - 150); }, this);
-        // this.game.input.keyboard.addKey(Phaser.Keyboard.V).onDown.add(function () { this.path.pathPoints.splice(-1, 1); console.log(this.path.pathPoints.length); }, this);
-        this.exportKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
-        this.exportKey.onDown.add(this.exportLevel, this);
-
-        this.game.camera.follow(null);
-    }
-
-    // 
     loadMap(levelNumber, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup) {
         // set correct background, bounds, camera etc;
         this.levelNumber = levelNumber;
@@ -79,12 +50,11 @@ export default class {
         this.game.world.setBounds(0, 0, (2048 * this.levelScale), (2048 * this.levelScale));
         this.currentLevel.scale.setTo(this.levelScale);
         this.currentLevel.smoothed = false;
+        this.graphics = this.game.add.graphics(0, 0);
 
         // load map from file
         let json = require('../../assets/levels/level'+this.levelNumber+'.json');
-
-        this.graphics = this.game.add.graphics(0, 0);
-        for (let i = 0; i < json.road.length; i++) {
+        if(json.road) { for (let i = 0; i < json.road.length; i++) {
             let poly = json.road[i];
             this.polygons[this.POLYTYPE.road].push(new Phaser.Polygon(
                 poly._points
@@ -92,8 +62,8 @@ export default class {
             // this.graphics.lineStyle(1, 0x11eeee);
             // this.graphics.drawPolygon(poly._points);
             // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
-        }
-        for (let i = 0; i < json.boost.length; i++) {
+        } }
+        if(json.boost) { for (let i = 0; i < json.boost.length; i++) {
             let poly = json.boost[i];
             this.polygons[this.POLYTYPE.boost].push(new Phaser.Polygon(
                 poly._points
@@ -101,8 +71,8 @@ export default class {
             // this.graphics.lineStyle(1, 0xee11ee);
             // this.graphics.drawPolygon(poly._points);
             // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
-        }
-        for (let i = 0; i < json.collision.length; i++) {
+        } }
+        if(json.collision) { for (let i = 0; i < json.collision.length; i++) {
             let poly = json.collision[i];
             this.polygons[this.POLYTYPE.collision].push(new Phaser.Polygon(
                 poly._points
@@ -110,8 +80,8 @@ export default class {
             // this.graphics.lineStyle(1, 0xee11ee);
             // this.graphics.drawPolygon(poly._points);
             // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
-        }
-        for (let i = 0; i < json.checkpoints.length; i++) {
+        } }
+        if(json.checkpoints) { for (let i = 0; i < json.checkpoints.length; i++) {
             let poly = json.checkpoints[i];
             this.polygons[this.POLYTYPE.checkpoints].push(new Phaser.Polygon(
                 poly._points
@@ -119,23 +89,25 @@ export default class {
             // this.graphics.lineStyle(1, 0xfef111);
             // this.graphics.drawPolygon(poly._points);
             // this.graphics.lineTo(poly._points[0].x, poly._points[0].y); // complete polygon...
-        }
+        } }
 
-        for (let i = 0; i < json.startPositions.length; i++) {
-            this.startPositions[i] = json.startPositions[i];
-            this.startRects[i].x = this.startPositions[i].x - 10;
-            this.startRects[i].y = this.startPositions[i].y - 10;
+        if(json.startPositions) { for (let i = 0; i < json.startPositions.length; i++) {
+                this.startPositions[i] = json.startPositions[i];
+                this.startRects[i].x = this.startPositions[i].x - 10;
+                this.startRects[i].y = this.startPositions[i].y - 10;
+            }
+            // set player position etc
+            if (this.state.player) {
+                this.state.player.body.x = this.startPositions[0].x;
+                this.state.player.body.y = this.startPositions[0].y;
+            }
         }
 
         this.path.pathPoints = [];
-        for (let i = 0; i < json.path.length; i++) {
+        if(json.path) { for (let i = 0; i < json.path.length; i++) {
             let p = json.path[i];
-            this.path.add(p.x, p.y);
-        }
-
-        // set player position etc
-        this.state.player.body.x = this.startPositions[0].x;
-        this.state.player.body.y = this.startPositions[0].y;
+            this.path.add(p.x, p.y, false);
+        } }
 
         if (powerUpCollisionGroup && opponentCollisionGroup && pedoCollisionGroup) {
             this.state.createOpponents(this.path, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, pedoCollisionGroup, this.startPositions[1].x, this.startPositions[1].y, this);
@@ -167,10 +139,10 @@ export default class {
         game.debug.text("layer:" + this.selectedLayer, 830, 692);
 
 
-        // for (let i = 0; i < this.startRects.length; i++) {
-        //     let rect = this.startRects[i];
-        //     game.debug.geom(rect);
-        // }
+        for (let i = 0; i < this.startRects.length; i++) {
+            let rect = this.startRects[i];
+            game.debug.geom(rect);
+        }
 
         // // debug polygons
         // for (let i = 0; i < this.roadPolygons.length; i++) {
@@ -185,21 +157,21 @@ export default class {
         //     //     if (i < poly.points.length) {
         //     //         // game.debug.geom(this.debugLines[i], 'rgba(111,111,255,1)');
         //     //     }
-        //     // } 
+        //     // }
         // }
 
-        // draw points 
+        // draw points
         for (let i = 0; i < this.verticies.length; i++) {
             game.debug.geom(this.verticies[i], 'rgba(255,255,255,1)');
             // if (i < this.debugLines.length) {
             //     game.debug.geom(this.debugLines[i], 'rgba(111,111,255,1)');
             // }
-        } 
+        }
 
         // debug draw lines
         for (let i = 0; i < this.debugLines.length; i++) {
             game.debug.geom(this.debugLines[i], 'rgba(111,111,255,1)');
-        } 
+        }
 
     }
 
@@ -232,7 +204,7 @@ export default class {
         this.verticies = [];
     }
 
-    // 
+    //
     mouseDown() {
         if (game.input.activePointer.leftButton.isDown) {
             this.verticies.push(
@@ -253,7 +225,7 @@ export default class {
         }
     }
 
-    // 
+    //
     mouseUp() {
         if (game.input.activePointer.rightButton.isDown) {
             this.isDragging = false;

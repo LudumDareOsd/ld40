@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { centerGameObjects } from '../utils'
+import config from '../config';
 
 export default class extends Phaser.State {
   init() { }
@@ -47,7 +48,7 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
+    window.oncontextmenu = function (e) { e.preventDefault(); } // disable right click menu on canvas
 
     this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash')
     this.splash.x = 0;
@@ -87,7 +88,8 @@ export default class extends Phaser.State {
     console.log('BGM STOP');
     this.bgm.stop();
     this.bgmStarted = false;
-    this.state.start('Game')
+      this.state.start('Game', true, false, config.startLevel);
+    // this.game.state.start('Mapeditor');
   }
 
   onAboutClick() {

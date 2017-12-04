@@ -6,8 +6,8 @@ export default class {
         this.pathPoints = [];
     }
 
-    add(x, y) {
-        let pathPoint = new PathPoint(this.game, x, y);
+    add(x, y, show) {
+        let pathPoint = new PathPoint(this.game, x, y, show ? 'rgba(255,0,0,0.1)' : 'rgba(255,0,0,0.0)');
         this.game.add.existing(pathPoint)
         this.pathPoints.push(pathPoint);
     }

@@ -68,9 +68,10 @@ export default class extends Phaser.Sprite {
         } else {
             s.scale.setTo(2, 2);
         }
+        s.angle = 360 * Math.random();
         s.sendToBack();
         this.map.currentLevel.sendToBack();
-        // Kill or @respawn?
+        // Kill or @respawn?, respawn makes more sense
         // this.kill();
         this.reset();
     }

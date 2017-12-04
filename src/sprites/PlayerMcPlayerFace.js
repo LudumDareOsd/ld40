@@ -45,17 +45,23 @@ export default class extends Phaser.Sprite {
 
         var isPadUsed = this.game.input.gamepad.supported && this.game.input.gamepad.active && this.pad1.connected;
         var isGivingGas = this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W);
+        var isBacking = this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) || this.game.input.keyboard.isDown(Phaser.Keyboard.S);
         var isLeft = this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.A);
         var isRight = game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.game.input.keyboard.isDown(Phaser.Keyboard.D);
 
         if (!isGivingGas)
             isGivingGas = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_A));
 
+        if (!isBacking)
+            isBacking = isPadUsed && (this.pad1.isDown(Phaser.Gamepad.XBOX360_X));
+
         if (!isLeft)
             isLeft = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1);
 
-        if (!isRight)
+        if (!isRight) {
             isRight = (this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1);
+            // console.log(this.pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X));
+        }
 
         var isPadPow = (this.pad1.justPressed(Phaser.Gamepad.XBOX360_B));
 
@@ -64,15 +70,19 @@ export default class extends Phaser.Sprite {
         this.engineSound.volume = this.volume;
 
         if (isLeft) {
-          this.body.rotateLeft(Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
+            var m = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1 ? -this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) : 1;
+            this.body.rotateLeft(m * Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
         }
         else if (isRight) {
-          this.body.rotateRight(Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
+            var m = this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1 ? this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) : 1;
+            this.body.rotateRight(Math.min(50, Math.max(this.speed * 0.15, isGivingGas ? 10 : 0)));
         }
 
         if (isGivingGas) {
             let totalThrust = this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore;
             this.body.thrust(totalThrust);
+        } else if (isBacking) {
+            this.body.thrust(-300);
         }
 
         if (isPadPow) {
@@ -103,7 +113,6 @@ export default class extends Phaser.Sprite {
                 let m2 = this.game.add.sprite(this.centerX + v2.x, this.centerY + v2.y, 'smoke');
                 m2.smoothed = false; m2.scale.setTo(1); m2.anchor.setTo(0.5, 0.5);
 
-                // this.game.physics.arcade.enable(m);
                 let tween1 = this.game.add.tween(m1).to({alpha:0}, 1000, Phaser.Easing.Linear.Out, false, 0);
                 this.game.add.tween(m1.scale).to({ x:4, y:4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
                 tween1.onComplete.add(function (e) {
@@ -139,7 +148,7 @@ export default class extends Phaser.Sprite {
             if (this.lap == config.totalLaps) {
                 // YOU ARE WINNAR
                 this.engineSound.stop();
-                this.game.state.start('YouWin');
+                this.game.state.start('YouWin', true, false, this.map.levelNumber+1);
             }
         }
     }
