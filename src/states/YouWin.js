@@ -18,12 +18,12 @@ export default class extends Phaser.State {
     this.backBtn.height = 75;
     this.backBtn.smoothed = false;
 
-    let x = 415;
+    let x = 423;
     if(this.game.highScore < 10) {
       x = 435
     };
 
-    this.score = this.game.add.text(x, 150, this.game.highScore, { font: "64px Courier New", fill: "#c31919", align: "center" });
+    this.score = this.game.add.text(x, 190, this.game.highScore, { font: "50px Courier New", fill: "#19b807", align: "center" });
     this.score.fontWeight = 900;
     this.score.fixedToCamera = true;
     this.game.world.bringToTop(this.score);
