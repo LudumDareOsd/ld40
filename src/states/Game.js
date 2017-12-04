@@ -330,20 +330,17 @@ export default class extends Phaser.State {
     this.hud.add(this.hudGoreometerBar);
     this.hud.add(this.hudSpeedometer);
 
-    this.game.add.existing(this.hud);
-
-    this.hud.fixedToCamera = true;
-
-    this.game.world.bringToTop(this.hud);
-
     this.killCountText = this.game.add.text(60, 100, this.killCount, { font: "26px Courier New", fill: "#c31919", align: "center" });
     this.killCountText.fontWeight = 900;
-    this.killCountText.fixedToCamera = true;
+    this.hud.add(this.killCountText);
 
     this.game.lapCountText = this.game.add.text(60, 33, this.player.lap + "/3", { font: "26px Courier New", fill: "#c31919", align: "center" });
     this.game.lapCountText.fontWeight = 900;
-    this.game.lapCountText.fixedToCamera = true;
-
+    this.hud.add(this.game.lapCountText);
+    
+    this.game.add.existing(this.hud);
+    this.hud.fixedToCamera = true;
+    this.game.world.bringToTop(this.hud);
   }
 
   showPowOnHud(powType) {
