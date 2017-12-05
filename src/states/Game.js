@@ -134,7 +134,7 @@ export default class extends Phaser.State {
     //var d = new Date();
     //this.game.rnd.sow(d.getTime());
 
-    console.log('tot pows to create:' + this.totalNbrOfPowerUpsToCreate + ' got nos:' + nbrOfNosCreated + ' carwash:' + nbrOfCarWashCreated);
+    //console.log('tot pows to create:' + this.totalNbrOfPowerUpsToCreate + ' got nos:' + nbrOfNosCreated + ' carwash:' + nbrOfCarWashCreated);
 
     /*do {
       var xPow = this.game.rnd.integerInRange(100, this.game.world.width);
@@ -167,24 +167,25 @@ export default class extends Phaser.State {
           let pu1 = new PowerUp(this.game, xPow, yPow, 'pw-nos', 'nos', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
           this.powerUps.push(pu1);
           nbrOfNosCreated += 1;
-          console.log('created pow nos');
+          //console.log('created pow nos');
         } else if (nbrOfCarWashCreated < this.nbrOfCarWashToCreate) {
           let pu2 = new PowerUp(this.game, xPow, yPow, 'pw-carwash', 'carwash', powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup, this.player, this);
           this.powerUps.push(pu2);
           nbrOfCarWashCreated += 1;
-          console.log('created pow carwash');
+          //console.log('created pow carwash');
         }
 
         nbrOfPowerUpsCreated = nbrOfNosCreated + nbrOfCarWashCreated;
       }
     }
 
-    console.log('powerups created:' + this.powerUps.length);
+    this.game.world.bringToTop(this.hud);
+    //console.log('powerups created:' + this.powerUps.length);
   }
 
   renewRemovedPowerup(powType, powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup) {
 
-    console.log('renew pow:' + powType);
+    //console.log('renew pow:' + powType);
 
     this.createPowerUps(powerUpCollisionGroup, opponentCollisionGroup, playerCollisionGroup);
     /*
@@ -211,7 +212,7 @@ export default class extends Phaser.State {
   }
 
   renewRemovedPowerup2() {
-    console.log('renew pow');
+    //console.log('renew pow');
 
     this.createPowerUps(this.powerUpCollisionGroup, this.opponentCollisionGroup, this.playerCollisionGroup);
   }
@@ -252,7 +253,7 @@ export default class extends Phaser.State {
 
   removePowerup(powType) {
     this.powerUps.splice(this.powerUps.indexOf(powType), 1);
-    console.log('pow removed, now have:' + this.powerUps.length);
+    //console.log('pow removed, now have:' + this.powerUps.length);
   }
 
   createHud(carplayer) {
@@ -345,11 +346,10 @@ export default class extends Phaser.State {
         
     this.game.add.existing(this.hud);
     this.game.world.bringToTop(this.hud);
-
   }
 
   showPowOnHud(powType) {
-    console.log('showing pow on hud:' + powType);
+    //console.log('showing pow on hud:' + powType);
     var assetPow = '';
     var xFix = 0;
 
@@ -376,7 +376,7 @@ export default class extends Phaser.State {
   }
 
   hidePow() {
-    console.log('hide pow on hud');
+    //console.log('hide pow on hud');
     if (this.hudPowIcon)
       this.hudPowIcon.kill();
 
