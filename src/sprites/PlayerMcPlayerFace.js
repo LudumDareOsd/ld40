@@ -38,8 +38,8 @@ export default class extends Phaser.Sprite {
     }
 
     update() {
-        
-        if(!this.game.started) {
+
+        if (!this.game.started) {
             return;
         }
 
@@ -84,6 +84,9 @@ export default class extends Phaser.Sprite {
 
         if (isGivingGas) {
             let totalThrust = this.maxThrust + this.addedThrust + this.boost - this.offRoad - this.gore;
+            if (totalThrust < 500) {
+                totalThrust = 500;
+            }
             this.body.thrust(totalThrust);
         } else if (isBacking) {
             this.body.thrust(-300);
@@ -117,12 +120,12 @@ export default class extends Phaser.Sprite {
                 let m2 = this.game.add.sprite(this.centerX + v2.x, this.centerY + v2.y, 'smoke');
                 m2.smoothed = false; m2.scale.setTo(1); m2.anchor.setTo(0.5, 0.5);
 
-                let tween1 = this.game.add.tween(m1).to({alpha:0}, 1000, Phaser.Easing.Linear.Out, false, 0);
-                this.game.add.tween(m1.scale).to({ x:4, y:4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
+                let tween1 = this.game.add.tween(m1).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
+                this.game.add.tween(m1.scale).to({ x: 4, y: 4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
                 tween1.onComplete.add(function (e) {
                     m1.kill();
                 }, this);
-                let tween2 = this.game.add.tween(m2).to({ alpha:0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
+                let tween2 = this.game.add.tween(m2).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.Out, false, 0);
                 this.game.add.tween(m2.scale).to({ x: 4, y: 4 }, 1000, Phaser.Easing.Linear.Out, true, 0);
                 tween2.onComplete.add(function (e) {
                     m2.kill();
@@ -154,7 +157,7 @@ export default class extends Phaser.Sprite {
                 // YOU ARE WINNAR
                 this.engineSound.stop();
                 this.game.highScore += this.game.killCount;
-                this.game.state.start('YouWin', true, false, this.map.levelNumber+1);
+                this.game.state.start('YouWin', true, false, this.map.levelNumber + 1);
             }
         }
     }
@@ -168,7 +171,7 @@ export default class extends Phaser.Sprite {
             this.game.nos.play();
             this.addThrust(this.powValue, this.powTimeSec);
             this.isPowActivated = true;
-        } else if(this.playerHasPowType == 'carwash') {
+        } else if (this.playerHasPowType == 'carwash') {
             this.game.splash.play();
             this.frame = 0;
             this.stateCaller.powCarWashUse();
@@ -180,7 +183,7 @@ export default class extends Phaser.Sprite {
 
     addPow(powType, powValue, powTimeSec) {
         this.game.pick.play();
-        if(this.playerHasPowType == '') {
+        if (this.playerHasPowType == '') {
             this.playerHasPowType = powType;
             this.powValue = powValue;
             this.powTimeSec = powTimeSec;
@@ -202,9 +205,9 @@ export default class extends Phaser.Sprite {
     }
 
     increaseGore() {
-      if (this.frame < this.maxFrames) {
-        this.frame++;
-      }
+        if (this.frame < this.maxFrames) {
+            this.frame++;
+        }
     }
 
     // http://www.html5gamedevs.com/topic/9835-is-there-a-proper-way-to-limit-the-speed-of-a-p2-body/
