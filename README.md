@@ -1,102 +1,38 @@
-# Phaser + ES6 + Webpack.
-#### A bootstrap project to create games with Phaser + ES6 + Webpack.
+# CARnage (game)
+## Ludum Dare 40 - "The more you have, the worse it is"
 
-![Phaser+ES6+Webpack](https://raw.githubusercontent.com/lean/phaser-es6-webpack/master/assets/images/phaser-es6-webpack.jpg)
+https://ldjam.com/events/ludum-dare/40/carnage
 
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+[This game might not be suited for children. It contains animated violence, blood and gore.]
 
+We are the new gladiators. Our world is fire and blood. Once, I was a cop. A road warrior hunting the outlaws. As the world fell, each of us in our own way was broken. PRIVATE CORPORATIONS run all correctional facilities for profit. Food and life is scarce. Now I fight for survival, I fight for **MEAT**! I am **CARnage**!
 
-## Features
-- ESLINT with JavaScript Standard Style configuration
-- Next generation of Javascript
-- Browsers are automatically updated as you change project files
-- Webpack ready
-- WebFont Loader
+Welcome to enjoy an adrenaline filled top-down car racing game inspired by old school games like Death Rally and Death Race and movies like Mad Max. Will you be able to finish the race before your opponents? Or will you have to starve yet again...?
 
-## Typescript 
-If you need typescript support checkout the ```typescript``` branch. Thanks to @MatsMaker
+Finish the number of laps needed by the level before your opponents. Try to get a high score. Pick up the power-ups to help you along your battles.
 
-# Setup
-You'll need to install a few things before you have a working copy of the project.
+You'll have to finish first to be able to continue and call you a "winner". Run over pedestrians to get a higher kill-count. But watch out, a hit also increases your Gore-O-Meter. The higher it goes the slower your car will go... How many kills do you dare to get?
 
-## 1. Clone this repo:
+Controls: Keyboard or Gamepad
+- Left: Left arrow OR a
+- Right: Right arrow OR d
+- Thrust: Up arrow OR w [Gamepad A]
+- Reverse: Down arrow OR s [Gamepad X]
+- Use power-up: Space [Gamepad B]
 
-Navigate into your workspace directory.
+Power-ups:
+- Nos: makes you go faster for a couple of seconds
+- Car wash: wash your car to bring down the Gore-O-Meter and thus making you go faster again
 
-Run:
+Use the boost lanes to go faster!
+Don't cheat! You have to go thru all checkpoints to win...
 
-```git clone https://github.com/lean/phaser-es6-webpack.git```
+This time around 4 of us teamed up to do a Jam: Team Östersund (Sweden):  
+@sawtan: graphics, sound and music  
+@khorm: level editor and coding  
+@emil-sunesson: coding  
+@rolle: coding
 
-## 2. Install node.js and npm:
-
-https://nodejs.org/en/
-
-
-## 3. Install dependencies (optionally you can install [yarn](https://yarnpkg.com/)):
-
-Navigate to the cloned repo's directory.
-
-Run:
-
-```npm install``` 
-
-or if you chose yarn, just run ```yarn```
-
-## 4. Run the development server:
-
-Run:
-
-```npm run dev```
-
-This will run a server so you can run the game in a browser. It will also start a watch process, so you can change the source and the process will recompile and refresh the browser automatically.
-
-To run the game, open your browser and enter http://localhost:3000 into the address bar.
-
-
-## Build for deployment:
-
-Run:
-
-```npm run deploy```
-
-This will optimize and minimize the compiled bundle.
-
-## Deploy for cordova:
-Make sure to uncomment the cordova.js file in the src/index.html and to update config.xml with your informations. (name/description...)
-
-More informations about the cordova configuration:
-https://cordova.apache.org/docs/en/latest/config_ref/
-
-There is 3 platforms actually tested and supported : 
-- browser
-- ios
-- android
-
-First run (ios example):
-
-```
-npm run cordova
-cordova platform add ios
-cordova run ios
-```
-
-Update (ios example):
-
-```
-npm run cordova
-cordova platform update ios
-cordova run ios
-```
-
-This will optimize and minimize the compiled bundle.
-
-## Credits
-Big thanks to these great repos:
-
-https://github.com/belohlavek/phaser-es6-boilerplate
-
-https://github.com/cstuncsik/phaser-es6-demo
-
-## Contributors
-
-https://github.com/RenaudROHLINGER
+Tools:
+- Phaser CE (http://phaser.io/)
+- Visual Studio Code (https://code.visualstudio.com/)
